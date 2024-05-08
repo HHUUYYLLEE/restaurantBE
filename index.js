@@ -56,3 +56,4 @@ app.listen(port, () => {
 
 // const generateData = require("./utils/generatedata");
 // generateData();
+module.exports = app;
