@@ -4,7 +4,7 @@ const { envConfig } = require("../constants/config");
 const connectDB = async () => {
   try {
     const options = {};
-    await mongoose.connect(envConfig.mongoURI || envConfig.mongoURL, options);
+    await mongoose.connect(envConfig.mongoURI, options);
     console.log("Connected to mongoDB");
   } catch (error) {
     console.log(error);
