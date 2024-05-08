@@ -12,6 +12,9 @@ const RESTAURANT = {
 const FOOD = {
   NOT_FOUND: "Food not found",
   INVALID_REQUEST: "Invalid food request",
+  NOT_CREATED: "Food not created",
+  CREATED: "Food successfully created",
+  FOUND: "Get all Food successfully",
 };
 
 module.exports = { MESSAGE, RESTAURANT, FOOD };

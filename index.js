@@ -10,6 +10,7 @@ const path = require("path");
 
 // const userRoutes = require("./routes/user.routes");
 const restaurantRoutes = require("./routes/restaurant.routes");
+const foodRoutes = require("./routes/food.routes");
 // const adminRoutes = require("./routes/admin.routes");
 // const hostRoutes = require("./routes/host.routes");
 // const addressRoutes = require("./routes/address.routes");
@@ -39,6 +40,7 @@ app.use(bodyParser.json());
 
 // app.use("/api/v1/user", userRoutes);
 app.use("/api/restaurant", restaurantRoutes);
+app.use("/api/food", foodRoutes);
 // app.use("/api/v1/admin", adminRoutes);
 // app.use("/api/v1/host", hostRoutes);
 // app.use("/api/v1/address", addressRoutes);

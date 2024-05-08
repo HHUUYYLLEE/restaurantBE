@@ -27,10 +27,11 @@ router.post(
   createRestaurantValidator,
   wrapRequestHandler(createRestaurant)
 );
+
+router.get("/:id", getRestaurantValidator, wrapRequestHandler(getRestaurant));
 router.get(
   "/",
   getAllRestaurantsValidator,
   wrapRequestHandler(getAllRestaurants)
 );
-router.get("/:id", getRestaurantValidator, wrapRequestHandler(getRestaurant));
 module.exports = router;

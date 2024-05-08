@@ -70,13 +70,12 @@ const getAllRestaurants = async (req, res) => {
     ];
   }
   // console.log(conditions);
-  const { restaurants, totalPage } = await restaurantServices.getAllRestaurants(
-    {
+  const { restaurants, totalPages } =
+    await restaurantServices.getAllRestaurants({
       conditions,
       page,
       limit,
-    }
-  );
+    });
   if (!restaurants) {
     throw new ErrorWithStatus({
       message: RESTAURANT.NOT_FOUND,
@@ -86,7 +85,7 @@ const getAllRestaurants = async (req, res) => {
   res.json({
     message: RESTAURANT.FOUND,
     restaurants,
-    totalPage,
+    totalPages,
     page,
     limit,
   });
