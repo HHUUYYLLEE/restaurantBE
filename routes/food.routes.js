@@ -18,7 +18,7 @@ const {
 
 router.post(
   "/",
-  upload.food("image"),
+  upload.single("image"),
   foodImageValidator,
   createFoodValidator,
   wrapRequestHandler(createFood)

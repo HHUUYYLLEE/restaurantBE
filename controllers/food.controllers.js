@@ -2,7 +2,6 @@ const { FOOD } = require("../constants/message");
 const STATUS = require("../constants/status");
 const { ErrorWithStatus } = require("../utils/errors");
 const foodServices = require("../services/food.services");
-const foodSubImagesServices = require("../services/food_sub_images.services");
 const restaurantServices = require("../services/restaurant.services");
 const createFood = async (req, res) => {
   const { restaurant_id, name, desc, status, price, quantity } = req.body;
