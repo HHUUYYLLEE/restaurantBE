@@ -2,7 +2,7 @@ const multer = require("multer");
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, "public/uploads/food");
+    cb(null, ".vercel/output/static/uploads/food");
   },
   filename: (req, file, cb) => {
     cb(null, Date.now() + file.fieldname + "-" + file.originalname);
