@@ -24,6 +24,10 @@ router.post(
   wrapRequestHandler(createFood)
 );
 router.get("/:id", getFoodValidator, wrapRequestHandler(getFood));
-router.get("/restaurant/:id", getFoodValidator, wrapRequestHandler(getFood));
+router.get(
+  "/restaurant/:id",
+  getAllFoodInRestaurantValidator,
+  wrapRequestHandler(getAllFoodInRestaurant)
+);
 router.get("/", getAllFoodValidator, wrapRequestHandler(getAllFood));
 module.exports = router;

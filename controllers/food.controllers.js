@@ -63,18 +63,20 @@ const getAllFood = async (req, res) => {
 
 const getFood = async (req, res) => {
   const { id } = req.params;
-  const food = await foodServices.getAllFood(id);
+  const food = await foodServices.getFood(id);
   if (!food) {
     throw new ErrorWithStatus({
       message: FOOD.NOT_FOUND,
       status: STATUS.NOT_FOUND,
     });
   }
-  res.json({ message: FOOD.FOUND, restaurant });
+  res.json({ message: FOOD.FOUND, food });
 };
 
 const getAllFoodInRestaurant = async (req, res) => {
-  let { id, page, limit } = req.query;
+  const { id } = req.params;
+  let { page, limit } = req.query;
+  console.log(id);
   page = parseInt(page) || 1;
   limit = parseInt(limit) || 10;
   const { allFoodInRestaurant, totalPages } =

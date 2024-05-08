@@ -1,4 +1,5 @@
 const FoodModel = require("../models/food.schemas");
+const mongoose = require("mongoose");
 
 class FoodServices {
   async createFood(obj) {
@@ -19,10 +20,14 @@ class FoodServices {
     return food;
   }
   async getAllFoodInRestaurant(id, page, limit) {
-    const allFoodInRestaurant = await FoodModel.find({ restaurant_id: id })
+    const allFoodInRestaurant = await FoodModel.find({
+      restaurant_id: new mongoose.Types.ObjectId(id),
+    })
       .skip((page - 1) * limit)
       .limit(limit);
-    const total = await FoodModel.countDocuments({ restaurant_id: id });
+    const total = await FoodModel.countDocuments({
+      restaurant_id: new mongoose.Types.ObjectId(id),
+    });
     const totalPages = Math.ceil(total / limit);
     return { allFoodInRestaurant, totalPages };
   }

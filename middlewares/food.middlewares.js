@@ -2,12 +2,13 @@ const { checkSchema } = require("express-validator");
 const validate = require("../utils/validation");
 const { FOOD } = require("../constants/message");
 const foodImageValidator = function (req, res, next) {
-  if (Object.keys(req.file).length !== 1) {
-    throw new Error(FOOD.INVALID_REQUEST);
+  //   console.log(typeof req.file);
+  if (req.file === undefined) throw new Error(FOOD.INVALID_REQUEST);
+  console.log(req.file);
+  if (typeof req.file === "object") {
+    if (req.file.fieldname !== "image") throw new Error(FOOD.INVALID_REQUEST);
     next();
   }
-  if (!("image" in req.file)) throw new Error(FOOD.INVALID_REQUEST);
-  next();
 };
 const createFoodValidator = validate(
   checkSchema({

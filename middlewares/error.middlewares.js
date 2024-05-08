@@ -6,12 +6,13 @@ const fs = require("fs");
 const defaultErrorHander = (err, req, res, next) => {
   // console.log(err);
   // console.log(req.files);
-  if (Object.keys(req.files).length > 0) {
-    for (const [key, value] of Object.entries(req.files)) {
-      fs.unlink(value[0].path, (err) => {});
-      // console.log(value[0]);
+  if ("files" in req)
+    if (Object.keys(req.files).length > 0) {
+      for (const [key, value] of Object.entries(req.files)) {
+        fs.unlink(value[0].path, (error) => {});
+        // console.log(value[0]);
+      }
     }
-  }
 
   if (err instanceof ErrorWithStatus) {
     return res.status(err.status).json(omit(err, ["status"]));
