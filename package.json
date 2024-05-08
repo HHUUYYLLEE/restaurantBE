@@ -137,7 +137,7 @@
     "yallist": "^4.0.0"
   },
   "scripts": {
-    "start": "nodemon --inspect index.js",
+    "start": "nodemon --inspect ./api/index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "huyle",
