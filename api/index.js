@@ -4,17 +4,17 @@ const cors = require("cors");
 const morgan = require("morgan");
 const helmet = require("helmet");
 const rateLimit = require("express-rate-limit");
-const { envConfig } = require("./constants/config");
-const { connectDB } = require("./services/database.services");
+const { envConfig } = require("../constants/config");
+const { connectDB } = require("../services/database.services");
 const path = require("path");
 
 // const userRoutes = require("./routes/user.routes");
-const restaurantRoutes = require("./routes/restaurant.routes");
-const foodRoutes = require("./routes/food.routes");
+const restaurantRoutes = require("../routes/restaurant.routes");
+const foodRoutes = require("../routes/food.routes");
 // const adminRoutes = require("./routes/admin.routes");
 // const hostRoutes = require("./routes/host.routes");
 // const addressRoutes = require("./routes/address.routes");
-const defaultErrorHander = require("./middlewares/error.middlewares");
+const defaultErrorHander = require("../middlewares/error.middlewares");
 
 const port = envConfig.port;
 const app = express();
