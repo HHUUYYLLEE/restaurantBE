@@ -40,8 +40,8 @@ const googleDriveUpload = async (req, res, next) => {
 
       // console.log("ID:", uploadFile.data.id);
       req.fileIDs.push(uploadFile.data.id);
-      console.log("fileIDs:");
-      console.log(req.fileIDs);
+      // console.log("fileIDs:");
+      // console.log(req.fileIDs);
     } catch (err) {
       next(new Error(RESTAURANT.IMAGES_UPLOAD_FAILED));
     }
@@ -52,6 +52,7 @@ const googleDriveUpload = async (req, res, next) => {
 const restaurantImageValidator = async (req, res, next) => {
   if (Object.keys(req.files).length !== 5)
     next(new Error(RESTAURANT.NOT_CREATED));
+  console.log(req.files);
   if (
     !("image" in req.files) ||
     !("image2" in req.files) ||
