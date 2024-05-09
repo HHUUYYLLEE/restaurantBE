@@ -7,5 +7,13 @@ const OrderFoodModel = require("../models/order_food.schemas");
 const OrderFoodListModel = require("../models/order_food_list.schemas");
 const mongoose = require("mongoose");
 
-const generateData = async () => {};
+const generateData = async () => {
+  RestaurantSubImagesModel.createCollection();
+  UserModel.createCollection();
+  FoodModel.createCollection();
+  OrderTableModel.createCollection();
+  OrderFoodModel.createCollection();
+  OrderFoodListModel.createCollection();
+  RestaurantModel.createCollection();
+};
 module.exports = generateData;

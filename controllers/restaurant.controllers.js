@@ -1,4 +1,4 @@
-const { RESTAURANT } = require("../constants/message");
+const { RESTAURANT, USER } = require("../constants/message");
 const STATUS = require("../constants/status");
 const { ErrorWithStatus } = require("../utils/errors");
 const restaurantServices = require("../services/restaurant.services");
@@ -20,7 +20,7 @@ const createRestaurant = async (req, res) => {
   } = req.body;
   if (!(await userServices.getUser(user_id)))
     throw new ErrorWithStatus({
-      message: RESTAURANT.NOT_CREATED,
+      message: USER.NOT_FOUND,
       status: STATUS.BAD_REQUEST,
     });
   const newRestaurant = await restaurantServices.createRestaurant({

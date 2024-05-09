@@ -18,7 +18,7 @@ const googleDriveUpload = async (req, res, next) => {
   oauth2Client.setCredentials({ refresh_token: envConfig.refreshToken });
   const drive = google.drive({ version: "v3", auth: oauth2Client });
   for (const [key, value] of Object.entries(images)) {
-    // console.log(image);
+    // console.log(value[0]);
     let image = value[0];
     try {
       const metaData = {
@@ -40,8 +40,8 @@ const googleDriveUpload = async (req, res, next) => {
 
       // console.log("ID:", uploadFile.data.id);
       req.fileIDs.push(uploadFile.data.id);
-      // console.log("fileIDs:");
-      // console.log(req.fileIDs);
+      console.log("fileIDs:");
+      console.log(req.fileIDs);
     } catch (err) {
       next(new Error(RESTAURANT.IMAGES_UPLOAD_FAILED));
     }
@@ -51,6 +51,14 @@ const googleDriveUpload = async (req, res, next) => {
 
 const restaurantImageValidator = async (req, res, next) => {
   if (Object.keys(req.files).length !== 5)
+    next(new Error(RESTAURANT.NOT_CREATED));
+  if (
+    !("image" in req.files) ||
+    !("image2" in req.files) ||
+    !("image3" in req.files) ||
+    !("image4" in req.files) ||
+    !("image5" in req.files)
+  )
     next(new Error(RESTAURANT.NOT_CREATED));
 
   next();

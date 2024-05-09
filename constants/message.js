@@ -17,5 +17,7 @@ const FOOD = {
   CREATED: "Food successfully created",
   FOUND: "Get all Food successfully",
 };
-
-module.exports = { MESSAGE, RESTAURANT, FOOD };
+const USER = {
+  NOT_FOUND: "User not found",
+};
+module.exports = { MESSAGE, RESTAURANT, FOOD, USER };
