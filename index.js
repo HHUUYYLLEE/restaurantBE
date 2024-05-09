@@ -1,5 +1,5 @@
 const express = require("express");
-const bodyParser = require("body-parser");
+// const bodyParser = require("body-parser");
 const cors = require("cors");
 const morgan = require("morgan");
 const helmet = require("helmet");
@@ -35,8 +35,9 @@ app.use(morgan("combined"));
 app.use(helmet());
 app.use(cors());
 app.use(express.json());
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(bodyParser.json());
+// app.use(bodyParser.urlencoded({ extended: false }));
+// app.use(bodyParser.json());
+
 // app.use("/api/v1/user", userRoutes);
 app.use("/api/restaurant", restaurantRoutes);
 app.use("/api/food", foodRoutes);
