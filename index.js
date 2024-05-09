@@ -7,7 +7,8 @@ const rateLimit = require("express-rate-limit");
 const { envConfig } = require("./constants/config");
 const { connectDB } = require("./services/database.services");
 const path = require("path");
-
+const expressBusboy = require("express-busboy");
+expressBusboy.extend(app);
 // const userRoutes = require("./routes/user.routes");
 const restaurantRoutes = require("./routes/restaurant.routes");
 const foodRoutes = require("./routes/food.routes");
