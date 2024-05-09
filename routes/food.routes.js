@@ -11,6 +11,7 @@ const {
 const {
   createFoodValidator,
   foodImageValidator,
+  googleDriveUpload,
   getAllFoodValidator,
   getFoodValidator,
   getAllFoodInRestaurantValidator,
@@ -20,6 +21,7 @@ router.post(
   "/",
   upload.single("image"),
   foodImageValidator,
+  googleDriveUpload,
   createFoodValidator,
   wrapRequestHandler(createFood)
 );

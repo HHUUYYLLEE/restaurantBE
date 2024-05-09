@@ -16,6 +16,7 @@ const FOOD = {
   NOT_CREATED: "Food not created",
   CREATED: "Food successfully created",
   FOUND: "Get all Food successfully",
+  IMAGE_UPLOAD_FAILED: "Upload image failed",
 };
 const USER = {
   NOT_FOUND: "User not found",

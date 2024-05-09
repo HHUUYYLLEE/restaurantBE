@@ -1,15 +1,50 @@
 const { checkSchema } = require("express-validator");
 const validate = require("../utils/validation");
+const drive = require("../utils/googledrivecre");
+const STATUS = require("../constants/status");
+const stream = require("stream");
 const { FOOD } = require("../constants/message");
+const { envConfig } = require("../constants/config");
+
+const googleDriveUpload = async (req, res, next) => {
+  const image = req.file;
+  let bufferStream = new stream.PassThrough();
+  bufferStream.end(image.buffer);
+  try {
+    let filename = Date.now() + Math.random() + "food";
+    filename = filename.replace(/\./g, "");
+    const metaData = {
+      name: filename + ".jpg",
+      parents: [envConfig.food_folder_id], // the ID of the folder you get from createFolder.js is used here
+    };
+    const media = {
+      mimeType: "image/jpeg",
+      body: bufferStream, // the image sent through multer will be uploaded to Drive
+    };
+
+    // uploading the file
+    const uploadFile = await drive.files.create({
+      resource: metaData,
+      media: media,
+      fields: "id",
+    });
+
+    req.fileID = uploadFile.data.id;
+  } catch (err) {
+    next(new Error(FOOD.IMAGE_UPLOAD_FAILED));
+  }
+
+  next();
+};
+
 const foodImageValidator = function (req, res, next) {
   //   console.log(typeof req.file);
-  if (req.file === undefined) throw new Error(FOOD.INVALID_REQUEST);
-  console.log(req.file);
-  if (typeof req.file === "object") {
-    if (req.file.fieldname !== "image") throw new Error(FOOD.INVALID_REQUEST);
-    next();
-  }
+  if (req.file === undefined || req.file === null)
+    next(new Error(FOOD.INVALID_REQUEST));
+  if (req.file.fieldname !== "image") next(new Error(FOOD.INVALID_REQUEST));
+  next();
 };
+
 const createFoodValidator = validate(
   checkSchema({
     name: {
@@ -113,4 +148,5 @@ module.exports = {
   getAllFoodValidator,
   foodImageValidator,
   getFoodValidator,
+  googleDriveUpload,
 };

@@ -1,21 +1,14 @@
 const { checkSchema } = require("express-validator");
-const { google } = require("googleapis");
 const stream = require("stream");
+const { envConfig } = require("../constants/config");
 const validate = require("../utils/validation");
 const { RESTAURANT } = require("../constants/message");
 const STATUS = require("../constants/status");
-const { envConfig } = require("../constants/config");
+const drive = require("../utils/googledrivecre");
 const googleDriveUpload = async (req, res, next) => {
   req.fileIDs = [];
   const images = req.files;
   // console.log(images);
-  const oauth2Client = new google.auth.OAuth2(
-    envConfig.clientID,
-    envConfig.clientSecret,
-    envConfig.redirectURI
-  );
-  oauth2Client.setCredentials({ refresh_token: envConfig.refreshToken });
-  const drive = google.drive({ version: "v3", auth: oauth2Client });
   for (const [key, value] of Object.entries(images)) {
     // console.log(value[0]);
     let image = value[0];
@@ -54,7 +47,7 @@ const googleDriveUpload = async (req, res, next) => {
 };
 
 const restaurantImageValidator = async (req, res, next) => {
-  console.log(req.files);
+  // console.log(req.files);
   if (Object.keys(req.files).length !== 5)
     next(new Error(RESTAURANT.NOT_CREATED));
   if (
