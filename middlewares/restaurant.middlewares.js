@@ -1,7 +1,6 @@
 const { checkSchema } = require("express-validator");
 const { google } = require("googleapis");
-const path = require("path");
-const fs = require("fs");
+const stream = require("stream");
 const validate = require("../utils/validation");
 const { RESTAURANT } = require("../constants/message");
 const STATUS = require("../constants/status");
@@ -20,15 +19,20 @@ const googleDriveUpload = async (req, res, next) => {
   for (const [key, value] of Object.entries(images)) {
     // console.log(value[0]);
     let image = value[0];
+    let bufferStream = new stream.PassThrough();
+    bufferStream.end(image.buffer);
+    let tempRNG = Math.random();
     try {
+      while (tempRNG === Math.random()) tempRNG = Math.random();
+      let filename = Date.now() + tempRNG + "restaurant";
+      filename = filename.replace(/\./g, "");
       const metaData = {
-        name: image.filename,
+        name: filename + ".jpg",
         parents: [envConfig.restaurant_folder_id], // the ID of the folder you get from createFolder.js is used here
       };
-      // console.log(__dirname);
       const media = {
-        mimeType: image.mimeType,
-        body: fs.createReadStream(path.join(__dirname, "/../", image.path)), // the image sent through multer will be uploaded to Drive
+        mimeType: "image/jpeg",
+        body: bufferStream, // the image sent through multer will be uploaded to Drive
       };
 
       // uploading the file
@@ -52,7 +56,6 @@ const googleDriveUpload = async (req, res, next) => {
 const restaurantImageValidator = async (req, res, next) => {
   if (Object.keys(req.files).length !== 5)
     next(new Error(RESTAURANT.NOT_CREATED));
-  console.log(req.files);
   if (
     !("image" in req.files) ||
     !("image2" in req.files) ||
