@@ -56,6 +56,7 @@ const googleDriveUpload = async (req, res, next) => {
 const restaurantImageValidator = async (req, res, next) => {
   if (Object.keys(req.files).length !== 5)
     next(new Error(RESTAURANT.NOT_CREATED));
+  console.log(req.files);
   if (
     !("image" in req.files) ||
     !("image2" in req.files) ||
