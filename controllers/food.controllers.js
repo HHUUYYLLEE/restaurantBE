@@ -76,15 +76,11 @@ const getFood = async (req, res) => {
 const getAllFoodInRestaurant = async (req, res) => {
   const { id } = req.params;
   let { page, limit } = req.query;
-  console.log(id);
+  // console.log(id);
   page = parseInt(page) || 1;
   limit = parseInt(limit) || 10;
   const { allFoodInRestaurant, totalPages } =
-    await foodServices.getAllFoodInRestaurant({
-      id,
-      page,
-      limit,
-    });
+    await foodServices.getAllFoodInRestaurant(id, page, limit);
   if (!allFoodInRestaurant) {
     throw new ErrorWithStatus({
       message: FOOD.NOT_FOUND,

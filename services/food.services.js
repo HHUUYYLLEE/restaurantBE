@@ -28,6 +28,7 @@ class FoodServices {
     const total = await FoodModel.countDocuments({
       restaurant_id: new mongoose.Types.ObjectId(id),
     });
+    console.log(limit);
     const totalPages = Math.ceil(total / limit);
     return { allFoodInRestaurant, totalPages };
   }
