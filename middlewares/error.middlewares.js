@@ -1,9 +1,9 @@
 const { omit } = require("lodash");
 const STATUS = require("../constants/status");
 const { ErrorWithStatus } = require("../utils/errors");
-const fs = require("fs");
 
 const defaultErrorHander = (err, req, res, next) => {
+  // console.log(req.fileIDs);
   if (err instanceof ErrorWithStatus) {
     return res.status(err.status).json(omit(err, ["status"]));
   }
@@ -12,7 +12,7 @@ const defaultErrorHander = (err, req, res, next) => {
       enumerable: true,
     });
   });
-  res.status(STATUS.INTERNAL_SERVER_ERROR).json({
+  res.status(STATUS.BAD_REQUEST).json({
     message: err.message,
     errorInfo: omit(err, ["stack"]),
   });

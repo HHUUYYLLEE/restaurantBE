@@ -7,6 +7,7 @@ const RESTAURANT = {
   NOT_CREATED: "Restaurant not created",
   CREATED: "Restaurant successfully created",
   FOUND: "Get all restaurants successfully",
+  IMAGES_UPLOAD_FAILED: "Upload images failed",
 };
 
 const FOOD = {

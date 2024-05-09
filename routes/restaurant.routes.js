@@ -11,6 +11,7 @@ const {
   createRestaurantValidator,
   restaurantImageValidator,
   getAllRestaurantsValidator,
+  googleDriveUpload,
   getRestaurantValidator,
 } = require("../middlewares/restaurant.middlewares");
 
@@ -24,6 +25,7 @@ router.post(
     { name: "image5", maxCount: 1 },
   ]),
   restaurantImageValidator,
+  googleDriveUpload,
   createRestaurantValidator,
   wrapRequestHandler(createRestaurant)
 );

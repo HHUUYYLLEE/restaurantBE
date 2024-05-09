@@ -1,18 +1,59 @@
 const { checkSchema } = require("express-validator");
+const { google } = require("googleapis");
+const path = require("path");
+const fs = require("fs");
 const validate = require("../utils/validation");
 const { RESTAURANT } = require("../constants/message");
+const STATUS = require("../constants/status");
+const { envConfig } = require("../constants/config");
+const googleDriveUpload = async (req, res, next) => {
+  req.fileIDs = [];
+  const images = req.files;
+  // console.log(images);
+  const oauth2Client = new google.auth.OAuth2(
+    envConfig.clientID,
+    envConfig.clientSecret,
+    envConfig.redirectURI
+  );
+  oauth2Client.setCredentials({ refresh_token: envConfig.refreshToken });
+  const drive = google.drive({ version: "v3", auth: oauth2Client });
+  for (const [key, value] of Object.entries(images)) {
+    // console.log(image);
+    let image = value[0];
+    try {
+      const metaData = {
+        name: image.filename,
+        parents: [envConfig.restaurant_folder_id], // the ID of the folder you get from createFolder.js is used here
+      };
+      // console.log(__dirname);
+      const media = {
+        mimeType: image.mimeType,
+        body: fs.createReadStream(path.join(__dirname, "/../", image.path)), // the image sent through multer will be uploaded to Drive
+      };
 
-const restaurantImageValidator = function (req, res, next) {
-  if (Object.keys(req.files).length !== 5) {
-    throw new Error(RESTAURANT.INVALID_REQUEST);
-  } else if (
-    !("image" in req.files) ||
-    !("image2" in req.files) ||
-    !("image3" in req.files) ||
-    !("image4" in req.files) ||
-    !("image5" in req.files)
-  )
-    throw new Error(RESTAURANT.INVALID_REQUEST);
+      // uploading the file
+      const uploadFile = await drive.files.create({
+        resource: metaData,
+        media: media,
+        fields: "id",
+      });
+
+      // console.log("ID:", uploadFile.data.id);
+      req.fileIDs.push(uploadFile.data.id);
+      // console.log("fileIDs:");
+      // console.log(req.fileIDs);
+    } catch (err) {
+      next(new Error(RESTAURANT.IMAGES_UPLOAD_FAILED));
+    }
+  }
+  next();
+};
+
+const restaurantImageValidator = async (req, res, next) => {
+  if (Object.keys(req.files).length !== 5)
+    next(new Error(RESTAURANT.NOT_CREATED));
+
+  next();
 };
 const createRestaurantValidator = validate(
   checkSchema({
@@ -196,4 +237,5 @@ module.exports = {
   getAllRestaurantsValidator,
   getRestaurantValidator,
   restaurantImageValidator,
+  googleDriveUpload,
 };
