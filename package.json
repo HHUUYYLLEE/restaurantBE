@@ -45,6 +45,7 @@
     "function-bind": "^1.1.2",
     "get-intrinsic": "^1.2.2",
     "glob-parent": "^5.1.2",
+    "googleapis": "^137.1.0",
     "gopd": "^1.0.1",
     "has-flag": "^3.0.0",
     "has-property-descriptors": "^1.0.1",
@@ -137,7 +138,7 @@
     "yallist": "^4.0.0"
   },
   "scripts": {
-    "start": "nodemon --inspect ./api/index.js",
+    "start": "nodemon --inspect index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "huyle",

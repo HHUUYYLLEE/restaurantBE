@@ -1,12 +1,11 @@
 const { checkSchema } = require("express-validator");
 const validate = require("../utils/validation");
 const { RESTAURANT } = require("../constants/message");
+
 const restaurantImageValidator = function (req, res, next) {
   if (Object.keys(req.files).length !== 5) {
     throw new Error(RESTAURANT.INVALID_REQUEST);
-    next();
-  }
-  if (
+  } else if (
     !("image" in req.files) ||
     !("image2" in req.files) ||
     !("image3" in req.files) ||
@@ -14,7 +13,6 @@ const restaurantImageValidator = function (req, res, next) {
     !("image5" in req.files)
   )
     throw new Error(RESTAURANT.INVALID_REQUEST);
-  next();
 };
 const createRestaurantValidator = validate(
   checkSchema({
