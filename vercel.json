@@ -1,23 +1,10 @@
 {
   "version": 2,
-  "builds": [
-    {
-      "src": "index.js",
-      "use": "@vercel/node"
-    },
-    {
-      "src": "public/**",
-      "use": "@vercel/static"
-    }
-  ],
+  "rewrites": [{ "source": "/(.*)", "destination": "/api" }],
   "routes": [
     {
-      "src": "/api/(.*)",
-      "dest": "index.js"
-    },
-    {
-      "src": "/(.+)",
-      "dest": "public/$1"
+      "src": "/restaurantimage(.+)",
+      "dest": "public/uploads/restaurants"
     }
   ]
 }

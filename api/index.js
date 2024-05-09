@@ -46,7 +46,7 @@ app.use("/api/food", foodRoutes);
 // app.use("/api/v1/address", addressRoutes);
 app.use(
   "/restaurantimage",
-  express.static(path.join(__dirname, "/public/uploads/restaurants"))
+  express.static(path.join(__dirname, "../public/uploads/restaurants"))
 );
 app.use(defaultErrorHander);
 
