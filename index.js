@@ -8,7 +8,7 @@ const { envConfig } = require("./constants/config");
 const { connectDB } = require("./services/database.services");
 const path = require("path");
 const expressBusboy = require("express-busboy");
-expressBusboy.extend(app);
+
 // const userRoutes = require("./routes/user.routes");
 const restaurantRoutes = require("./routes/restaurant.routes");
 const foodRoutes = require("./routes/food.routes");
@@ -38,7 +38,7 @@ app.use(cors());
 app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
-
+expressBusboy.extend(app);
 // app.use("/api/v1/user", userRoutes);
 app.use("/api/restaurant", restaurantRoutes);
 app.use("/api/food", foodRoutes);
