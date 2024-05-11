@@ -1,8 +1,9 @@
 const { checkSchema } = require("express-validator");
 const stream = require("stream");
+const { ErrorWithStatus } = require("../utils/errors");
 const { envConfig } = require("../constants/config");
 const validate = require("../utils/validation");
-const { RESTAURANT } = require("../constants/message");
+const { RESTAURANT, USER } = require("../constants/message");
 const STATUS = require("../constants/status");
 const drive = require("../utils/googledrivecre");
 const googleDriveUpload = async (req, res, next) => {
@@ -71,9 +72,8 @@ const createRestaurantValidator = validate(
       trim: true,
     },
     desc: {
-      notEmpty: true,
       isLength: {
-        options: { max: 1000 },
+        options: { max: 3000 },
       },
       trim: true,
     },
@@ -84,10 +84,7 @@ const createRestaurantValidator = validate(
       },
       trim: true,
     },
-    user_id: {
-      notEmpty: true,
-      trim: true,
-    },
+
     morning_open_time: {
       custom: {
         options: async (value, { req }) => {
@@ -210,6 +207,17 @@ const createRestaurantValidator = validate(
   ["body"]
 );
 
+const tokenValidatingResult = async (req, res, next) => {
+  if (req.user === undefined)
+    next(
+      new ErrorWithStatus({
+        message: USER.LOGIN_REQUIRED,
+        status: STATUS.UNAUTHORIZED,
+      })
+    );
+  next();
+};
+
 const getAllRestaurantsValidator = validate(
   checkSchema({
     search: {
@@ -242,6 +250,7 @@ module.exports = {
   createRestaurantValidator,
   getAllRestaurantsValidator,
   getRestaurantValidator,
+  tokenValidatingResult,
   restaurantImageValidator,
   googleDriveUpload,
 };

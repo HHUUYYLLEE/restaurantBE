@@ -12,6 +12,9 @@ const envConfig = {
   refreshTokenGoogleDrive: process.env.REFRESH_TOKEN_GOOGLE_DRIVE,
   restaurant_folder_id: process.env.RESTAURANT_FOLDER_ID,
   food_folder_id: process.env.FOOD_FOLDER_ID,
+  user_folder_id: process.env.USER_FOLDER_ID,
+  accessTokenSecret: process.env.ACCESS_TOKEN_SECRET,
+  refreshTokenSecret: process.env.REFRESH_TOKEN_SECRET,
 };
 
 module.exports = {

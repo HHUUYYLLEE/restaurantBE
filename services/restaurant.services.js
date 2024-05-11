@@ -14,6 +14,12 @@ class RestaurantServices {
     const totalPages = Math.ceil(total / limit);
     return { restaurants, totalPages };
   }
+  async findRestaurantUserMatch(user_id, restaurant_id) {
+    return await RestaurantModel.findOne({
+      _id: restaurant_id,
+      user_id: user_id,
+    });
+  }
   async getRestaurant(id) {
     const restaurant = await RestaurantModel.findById(id);
     return restaurant;

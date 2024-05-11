@@ -3,8 +3,10 @@ const validate = require("../utils/validation");
 const drive = require("../utils/googledrivecre");
 const STATUS = require("../constants/status");
 const stream = require("stream");
-const { FOOD } = require("../constants/message");
+const { FOOD, USER } = require("../constants/message");
 const { envConfig } = require("../constants/config");
+const restaurantServices = require("../services/restaurant.services");
+const { ErrorWithStatus } = require("../utils/errors");
 
 const googleDriveUpload = async (req, res, next) => {
   const image = req.file;
@@ -35,6 +37,28 @@ const googleDriveUpload = async (req, res, next) => {
   }
 
   next();
+};
+const tokenValidatingResult = async (req, res, next) => {
+  if (req.user === undefined)
+    next(
+      new ErrorWithStatus({
+        message: USER.LOGIN_REQUIRED,
+        status: STATUS.UNAUTHORIZED,
+      })
+    );
+  if (
+    await restaurantServices.findRestaurantUserMatch(
+      req.user._id,
+      req.body.restaurant_id
+    )
+  )
+    next();
+  next(
+    new ErrorWithStatus({
+      message: USER.LOGIN_REQUIRED,
+      status: STATUS.UNAUTHORIZED,
+    })
+  );
 };
 
 const foodImageValidator = function (req, res, next) {
@@ -146,6 +170,7 @@ module.exports = {
   createFoodValidator,
   getAllFoodInRestaurantValidator,
   getAllFoodValidator,
+  tokenValidatingResult,
   foodImageValidator,
   getFoodValidator,
   googleDriveUpload,

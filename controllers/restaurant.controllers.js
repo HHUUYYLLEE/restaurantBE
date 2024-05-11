@@ -9,7 +9,6 @@ const createRestaurant = async (req, res) => {
     name,
     desc,
     address,
-    user_id,
     morning_open_time,
     morning_closed_time,
     afternoon_open_time,
@@ -18,7 +17,8 @@ const createRestaurant = async (req, res) => {
     lat,
     lng,
   } = req.body;
-  if (!(await userServices.getUser(user_id)))
+  const user_id = req.user._id;
+  if (!(await userServices.getUserFromId(user_id)))
     throw new ErrorWithStatus({
       message: USER.NOT_FOUND,
       status: STATUS.BAD_REQUEST,

@@ -19,6 +19,17 @@ const FOOD = {
   IMAGE_UPLOAD_FAILED: "Upload image failed",
 };
 const USER = {
+  CREATED: "User successfully created",
+  INVALID_REQUEST: "Invalid user request",
   NOT_FOUND: "User not found",
+  WRONG_PASSWORD: "Wrong pasword",
+  INVALID_ROLE: "Invalid role",
+  INVALID_PHONE_NUMBER: "Invalid phone number",
+  INVALID_TOKEN: "Invalid token",
+  EMAIL_EXIST: "Email existed",
+  LOGIN_SUCCESS: "Login success",
+  LOGIN_REQUIRED: "Login required",
+  NOT_ADMIN: "You not admin",
+  IMAGE_UPLOAD_FAILED: "Upload image failed",
 };
 module.exports = { MESSAGE, RESTAURANT, FOOD, USER };

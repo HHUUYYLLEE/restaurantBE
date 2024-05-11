@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const upload = require("../middlewares/multer/food.multer");
+const upload = require("../utils/multer");
 const wrapRequestHandler = require("../utils/handlers");
 const {
   createFood,
@@ -11,18 +11,22 @@ const {
 const {
   createFoodValidator,
   foodImageValidator,
+  tokenValidatingResult,
   googleDriveUpload,
   getAllFoodValidator,
   getFoodValidator,
   getAllFoodInRestaurantValidator,
 } = require("../middlewares/food.middlewares");
+const { validateAccessToken } = require("../middlewares/user.middlewares");
 
 router.post(
   "/",
   upload.single("image"),
+  validateAccessToken,
+  tokenValidatingResult,
   foodImageValidator,
-  googleDriveUpload,
   createFoodValidator,
+  googleDriveUpload,
   wrapRequestHandler(createFood)
 );
 router.get("/:id", getFoodValidator, wrapRequestHandler(getFood));
