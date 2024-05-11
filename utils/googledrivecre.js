@@ -5,7 +5,9 @@ const oauth2Client = new google.auth.OAuth2(
   envConfig.clientSecret,
   envConfig.redirectURI
 );
-oauth2Client.setCredentials({ refresh_token: envConfig.refreshToken });
+oauth2Client.setCredentials({
+  refresh_token: envConfig.refreshTokenGoogleDrive,
+});
 const drive = google.drive({ version: "v3", auth: oauth2Client });
 
 module.exports = drive;

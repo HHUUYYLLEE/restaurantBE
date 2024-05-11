@@ -9,7 +9,7 @@ const envConfig = {
   clientID: process.env.CLIENT_ID,
   clientSecret: process.env.CLIENT_SECRET,
   redirectURI: process.env.REDIRECT_URI,
-  refreshToken: process.env.REFRESH_TOKEN,
+  refreshTokenGoogleDrive: process.env.REFRESH_TOKEN_GOOGLE_DRIVE,
   restaurant_folder_id: process.env.RESTAURANT_FOLDER_ID,
   food_folder_id: process.env.FOOD_FOLDER_ID,
 };
