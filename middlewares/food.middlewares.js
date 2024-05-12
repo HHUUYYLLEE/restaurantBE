@@ -33,27 +33,25 @@ const googleDriveUpload = async (req, res, next) => {
 
     req.fileURL = googleDriveURL(uploadFile.data.id);
   } catch (err) {
-    next(new Error(FOOD.IMAGE_UPLOAD_FAILED));
+    return next(new Error(FOOD.IMAGE_UPLOAD_FAILED));
   }
 
-  next();
+  return next();
 };
 const tokenValidatingResult = async (req, res, next) => {
   if (req.user === undefined)
-    next(
+    return next(
       new ErrorWithStatus({
         message: USER.LOGIN_REQUIRED,
         status: STATUS.UNAUTHORIZED,
       })
     );
-  if (
-    await restaurantServices.findRestaurantUserMatch(
-      req.user._id,
-      req.body.restaurant_id
-    )
-  )
-    next();
-  next(
+  const restaurant = await restaurantServices.findRestaurantUserMatch(
+    req.user._id,
+    req.body.restaurant_id
+  );
+  if (restaurant) return next();
+  return next(
     new ErrorWithStatus({
       message: USER.LOGIN_REQUIRED,
       status: STATUS.UNAUTHORIZED,
@@ -64,9 +62,10 @@ const tokenValidatingResult = async (req, res, next) => {
 const foodImageValidator = function (req, res, next) {
   //   console.log(typeof req.file);
   if (req.file === undefined || req.file === null)
-    next(new Error(FOOD.INVALID_REQUEST));
-  if (req.file.fieldname !== "image") next(new Error(FOOD.INVALID_REQUEST));
-  next();
+    return next(new Error(FOOD.INVALID_REQUEST));
+  if (req.file.fieldname !== "image")
+    return next(new Error(FOOD.INVALID_REQUEST));
+  return next();
 };
 
 const createFoodValidator = validate(
@@ -104,16 +103,6 @@ const createFoodValidator = validate(
       custom: {
         options: async (value, { req }) => {
           if (parseInt(value) > 0) return true;
-          else throw new Error(FOOD.INVALID_REQUEST);
-        },
-      },
-      trim: true,
-    },
-    quantity: {
-      isNumeric: true,
-      custom: {
-        options: async (value, { req }) => {
-          if (parseInt(value) >= 0) return true;
           else throw new Error(FOOD.INVALID_REQUEST);
         },
       },

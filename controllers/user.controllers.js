@@ -27,10 +27,12 @@ const registerUser = async (req, res) => {
     envConfig.refreshTokenSecret
   );
   user.refresh_token = refreshToken;
-  const data = await userServices.createUser(user);
+  const userData = await userServices.createUser(user);
+  const data = userData.toJSON();
+  const responseData = await userServices.login(data);
   res.json({
     message: USER.CREATED,
-    data,
+    data: responseData,
   });
 };
 
@@ -80,9 +82,13 @@ const loginUserGoogle = async (req, res) => {
     });
   }
 };
+const getUserProfile = async (req, res) => {
+  res.json({ message: USER.GET_PROFILE, user: req.user });
+};
 
 module.exports = {
   loginUser,
   registerUser,
   loginUserGoogle,
+  getUserProfile,
 };

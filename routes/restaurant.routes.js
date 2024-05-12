@@ -8,14 +8,18 @@ const {
   getRestaurant,
 } = require("../controllers/restaurant.controllers");
 const {
-  createRestaurantValidator,
+  createRestaurantSchemaValidator,
+  createRestaurantDataValidator,
   restaurantImageValidator,
   getAllRestaurantsValidator,
   googleDriveUpload,
   tokenValidatingResult,
   getRestaurantValidator,
 } = require("../middlewares/restaurant.middlewares");
-const { validateAccessToken } = require("../middlewares/user.middlewares");
+const {
+  validateAccessToken,
+  validateRefreshToken,
+} = require("../middlewares/user.middlewares");
 router.post(
   "/",
   upload.fields([
@@ -25,10 +29,12 @@ router.post(
     { name: "image4", maxCount: 1 },
     { name: "image5", maxCount: 1 },
   ]),
+  createRestaurantSchemaValidator,
   validateAccessToken,
+  validateRefreshToken,
   tokenValidatingResult,
   restaurantImageValidator,
-  createRestaurantValidator,
+  createRestaurantDataValidator,
   googleDriveUpload,
   wrapRequestHandler(createRestaurant)
 );

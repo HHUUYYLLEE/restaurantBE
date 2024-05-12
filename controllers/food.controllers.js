@@ -16,7 +16,6 @@ const createFood = async (req, res) => {
     desc,
     status,
     price,
-    quantity,
     image_url: req.fileURL,
   });
   if (!newFood) {

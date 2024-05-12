@@ -15,9 +15,9 @@ const googleDriveURL = require("../utils/googleDriveURL");
 const userAvatarValidator = async (req, res, next) => {
   //   console.log(typeof req.file);
   if (req.file === undefined || req.file === null)
-    next(new Error(USER.INVALID_REQUEST));
+    return next(new Error(USER.INVALID_REQUEST));
   if (req.file.fieldname !== "avatar") next(new Error(USER.INVALID_REQUEST));
-  next();
+  return next();
 };
 
 const googleDriveUpload = async (req, res, next) => {
@@ -45,20 +45,20 @@ const googleDriveUpload = async (req, res, next) => {
 
     req.fileURL = googleDriveURL(uploadFile.data.id);
   } catch (err) {
-    next(new Error(USER.IMAGE_UPLOAD_FAILED));
+    return next(new Error(USER.IMAGE_UPLOAD_FAILED));
   }
 
-  next();
+  return next();
 };
 
 const loginValidator = async (req, res, next) => {
   let dbUser = await userServices.getUserFromEmail(req.body.email);
-  if (!dbUser) next(new Error(USER.NOT_FOUND));
+  if (!dbUser) return next(new Error(USER.NOT_FOUND));
   let tempUser = dbUser.toJSON();
   let verify = await bcrypt.compare(req.body.password, tempUser.password);
-  if (!verify) next(new Error(USER.WRONG_PASSWORD));
+  if (!verify) return next(new Error(USER.WRONG_PASSWORD));
   req.user = tempUser;
-  next();
+  return next();
 };
 
 const registerValidator = validate(
@@ -94,10 +94,12 @@ const validateAccessToken = async (req, res, next) => {
   if (authHeader && authHeader.startsWith("Bearer")) {
     req.temporaryToken = authHeader.split(" ")[1];
     if (req.temporaryToken === undefined || req.temporaryToken === null) {
-      throw new ErrorWithStatus({
-        message: USER.LOGIN_REQUIRED,
-        status: STATUS.UNAUTHORIZED,
-      });
+      return next(
+        new ErrorWithStatus({
+          message: USER.LOGIN_REQUIRED,
+          status: STATUS.UNAUTHORIZED,
+        })
+      );
     }
     jwt.verify(
       req.temporaryToken,
@@ -105,29 +107,33 @@ const validateAccessToken = async (req, res, next) => {
       (err, decoded) => {
         if (err) {
           req.needToVerifyRefreshToken = true;
-          next();
+          return next();
         }
         req.user = decoded;
-        next();
+        return next();
       }
     );
   } else {
-    throw new ErrorWithStatus({
-      message: USER.LOGIN_REQUIRED,
-      status: STATUS.UNAUTHORIZED,
-    });
+    return next(
+      new ErrorWithStatus({
+        message: USER.LOGIN_REQUIRED,
+        status: STATUS.UNAUTHORIZED,
+      })
+    );
   }
 };
 const validateRefreshToken = async (req, res, next) => {
-  if (req.needToVerifyRefreshToken === false) next();
+  if (req.needToVerifyRefreshToken === false) return next();
   const user = await userServices.findRefreshToken(req.temporaryToken);
   if (!user)
-    throw new ErrorWithStatus({
-      message: USER.LOGIN_REQUIRED,
-      status: STATUS.UNAUTHORIZED,
-    });
+    return next(
+      new ErrorWithStatus({
+        message: USER.INVALID_TOKEN,
+        status: STATUS.UNAUTHORIZED,
+      })
+    );
   req.user = user;
-  next();
+  return next();
 };
 
 const verifyGoogleLoginCredentials = async (req, res, next) => {
@@ -140,10 +146,21 @@ const verifyGoogleLoginCredentials = async (req, res, next) => {
     });
     // console.log(req.userTicket);
 
-    next();
+    return next();
   } catch (error) {
-    next(new Error(USER.GOOGLE_CREDENTIAL_INVALID));
+    return next(new Error(USER.GOOGLE_CREDENTIAL_INVALID));
   }
+};
+const validateUserIDProfile = async (req, res, next) => {
+  const { id } = req.params;
+  if (req.user._id === id) return next();
+  else
+    return next(
+      new ErrorWithStatus({
+        message: USER.LOGIN_REQUIRED,
+        status: STATUS.UNAUTHORIZED,
+      })
+    );
 };
 
 module.exports = {
@@ -154,4 +171,5 @@ module.exports = {
   validateRefreshToken,
   googleDriveUpload,
   verifyGoogleLoginCredentials,
+  validateUserIDProfile,
 };

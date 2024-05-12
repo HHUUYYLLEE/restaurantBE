@@ -1,5 +1,4 @@
 const RestaurantModel = require("../models/restaurant.schemas");
-
 class RestaurantServices {
   async createRestaurant(obj) {
     const newRestaurant = await RestaurantModel.create(obj);
@@ -15,7 +14,7 @@ class RestaurantServices {
     return { restaurants, totalPages };
   }
   async findRestaurantUserMatch(user_id, restaurant_id) {
-    return await RestaurantModel.findOne({
+    return RestaurantModel.findOne({
       _id: restaurant_id,
       user_id: user_id,
     });

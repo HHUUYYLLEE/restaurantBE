@@ -17,15 +17,19 @@ const {
   getFoodValidator,
   getAllFoodInRestaurantValidator,
 } = require("../middlewares/food.middlewares");
-const { validateAccessToken } = require("../middlewares/user.middlewares");
+const {
+  validateAccessToken,
+  validateRefreshToken,
+} = require("../middlewares/user.middlewares");
 
 router.post(
   "/",
   upload.single("image"),
+  createFoodValidator,
   validateAccessToken,
+  validateRefreshToken,
   tokenValidatingResult,
   foodImageValidator,
-  createFoodValidator,
   googleDriveUpload,
   wrapRequestHandler(createFood)
 );

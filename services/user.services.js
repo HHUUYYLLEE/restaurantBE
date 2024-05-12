@@ -12,6 +12,8 @@ class UserServices {
         email: user.email,
         role: user.role,
         username: user.username,
+        avatar_url: user.avatar_url,
+        address: user.address,
       },
       envConfig.accessTokenSecret,
       { expiresIn: "10d" }

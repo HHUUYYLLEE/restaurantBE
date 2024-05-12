@@ -4,6 +4,7 @@ const { ErrorWithStatus } = require("../utils/errors");
 
 const defaultErrorHander = (err, req, res, next) => {
   // console.log(req.fileIDs);
+  // console.log(err);
   if (err instanceof ErrorWithStatus) {
     return res.status(err.status).json(omit(err, ["status"]));
   }

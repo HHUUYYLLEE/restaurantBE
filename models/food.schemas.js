@@ -12,7 +12,6 @@ const FoodSchema = new mongoose.Schema(
     image_url: { type: String, maxlength: 160, required: false },
     status: { type: Number, required: true },
     price: { type: Number, required: true },
-    quantity: { type: Number, required: true },
   },
   {
     collection: "food",

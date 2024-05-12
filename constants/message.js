@@ -8,6 +8,7 @@ const RESTAURANT = {
   CREATED: "Restaurant successfully created",
   FOUND: "Get all restaurants successfully",
   IMAGES_UPLOAD_FAILED: "Upload images failed",
+  INVALID_TIME: "Invalid time for open/close",
 };
 
 const FOOD = {
@@ -32,5 +33,6 @@ const USER = {
   LOGIN_REQUIRED: "Login required",
   NOT_ADMIN: "You not admin",
   IMAGE_UPLOAD_FAILED: "Upload image failed",
+  GET_PROFILE: "Get user profile successfully",
 };
 module.exports = { MESSAGE, RESTAURANT, FOOD, USER };

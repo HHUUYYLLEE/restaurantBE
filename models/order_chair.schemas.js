@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const OrderTableSchema = new mongoose.Schema(
+const OrderChairSchema = new mongoose.Schema(
   {
     user_id: {
       type: mongoose.Schema.Types.ObjectId,
@@ -19,10 +19,10 @@ const OrderTableSchema = new mongoose.Schema(
   },
   {
     timestamps: true,
-    collection: "order_table",
+    collection: "order_chair",
   }
 );
 
-const orderTableModel = mongoose.model("order_table", OrderTableSchema);
+const orderChairModel = mongoose.model("order_chair", OrderChairSchema);
 
-module.exports = orderTableModel;
+module.exports = orderChairModel;

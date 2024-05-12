@@ -51,7 +51,7 @@ const googleDriveUpload = async (req, res, next) => {
 const restaurantImageValidator = async (req, res, next) => {
   // console.log(req.files);
   if (Object.keys(req.files).length !== 5)
-    next(new Error(RESTAURANT.NOT_CREATED));
+    return next(new Error(RESTAURANT.NOT_CREATED));
   if (
     !("image" in req.files) ||
     !("image2" in req.files) ||
@@ -59,11 +59,11 @@ const restaurantImageValidator = async (req, res, next) => {
     !("image4" in req.files) ||
     !("image5" in req.files)
   )
-    next(new Error(RESTAURANT.NOT_CREATED));
+    return next(new Error(RESTAURANT.NOT_CREATED));
 
-  next();
+  return next();
 };
-const createRestaurantValidator = validate(
+const createRestaurantSchemaValidator = validate(
   checkSchema({
     name: {
       notEmpty: true,
@@ -208,15 +208,80 @@ const createRestaurantValidator = validate(
   ["body"]
 );
 
+const createRestaurantDataValidator = async (req, res, next) => {
+  let [morningOpenHour, morningOpenMinute] =
+    req.body.morning_open_time.split(":");
+  let [afternoonOpenHour, afternoonOpenMinute] =
+    req.body.afternoon_open_time.split(":");
+  let [morningClosedHour, morningClosedMinute] =
+    req.body.morning_closed_time.split(":");
+  let [afternoonClosedHour, afternoonClosedMinute] =
+    req.body.afternoon_closed_time.split(":");
+  morningOpenHour = parseInt(morningOpenHour);
+  morningOpenMinute = parseInt(morningOpenMinute);
+  morningClosedHour = parseInt(morningClosedHour);
+  afternoonOpenHour = parseInt(afternoonOpenHour);
+  afternoonOpenMinute = parseInt(afternoonOpenMinute);
+  morningClosedMinute = parseInt(morningClosedMinute);
+  afternoonClosedHour = parseInt(afternoonClosedHour);
+  afternoonClosedMinute = parseInt(afternoonClosedMinute);
+
+  if (
+    morningOpenHour > 12 ||
+    morningOpenHour < 0 ||
+    morningClosedHour > 12 ||
+    morningClosedHour < 0
+  )
+    return next(new Error(RESTAURANT.INVALID_TIME));
+  if (
+    afternoonOpenHour > 24 ||
+    afternoonOpenHour < 12 ||
+    afternoonClosedHour > 24 ||
+    afternoonClosedHour < 12
+  )
+    return next(new Error(RESTAURANT.INVALID_TIME));
+  if (
+    morningOpenMinute < 0 ||
+    morningOpenMinute > 59 ||
+    morningClosedMinute < 0 ||
+    morningClosedMinute > 59 ||
+    afternoonOpenMinute < 0 ||
+    afternoonOpenMinute > 59 ||
+    afternoonClosedMinute < 0 ||
+    afternoonClosedMinute > 59
+  )
+    return next(new Error(RESTAURANT.INVALID_TIME));
+  if (morningOpenHour === 12 && morningOpenMinute !== 0)
+    return next(new Error(RESTAURANT.INVALID_TIME));
+  if (afternoonOpenHour === 24 && afternoonOpenMinute !== 0)
+    return next(new Error(RESTAURANT.INVALID_TIME));
+  if (morningOpenHour > morningClosedHour)
+    return next(new Error(RESTAURANT.INVALID_TIME));
+  else if (
+    morningOpenHour === morningClosedHour &&
+    morningOpenMinute >= morningClosedMinute
+  )
+    return next(new Error(RESTAURANT.INVALID_TIME));
+
+  if (afternoonOpenHour > afternoonClosedHour)
+    return next(new Error(RESTAURANT.INVALID_TIME));
+  else if (
+    afternoonOpenHour === afternoonClosedHour &&
+    afternoonOpenMinute >= afternoonClosedMinute
+  )
+    return next(new Error(RESTAURANT.INVALID_TIME));
+  return next();
+};
+
 const tokenValidatingResult = async (req, res, next) => {
   if (req.user === undefined)
-    next(
+    return next(
       new ErrorWithStatus({
         message: USER.LOGIN_REQUIRED,
         status: STATUS.UNAUTHORIZED,
       })
     );
-  next();
+  return next();
 };
 
 const getAllRestaurantsValidator = validate(
@@ -246,12 +311,23 @@ const getRestaurantValidator = validate(
   }),
   ["params"]
 );
+const getAllUserRestaurantsValidator = validate(
+  checkSchema({
+    id: {
+      notEmpty: true,
+      trim: true,
+    },
+  }),
+  ["params"]
+);
 
 module.exports = {
-  createRestaurantValidator,
+  createRestaurantSchemaValidator,
   getAllRestaurantsValidator,
   getRestaurantValidator,
   tokenValidatingResult,
   restaurantImageValidator,
   googleDriveUpload,
+  createRestaurantDataValidator,
+  getAllUserRestaurantsValidator,
 };
