@@ -132,7 +132,7 @@ const validateRefreshToken = async (req, res, next) => {
 
 const verifyGoogleLoginCredentials = async (req, res, next) => {
   try {
-    const client = new OAuth2Client(envConfig.clientID);
+    const client = new OAuth2Client(envConfig.clientID, envConfig.clientSecret);
 
     req.userTicket = await client.verifyIdToken({
       idToken: req.body.credential,
