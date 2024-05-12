@@ -18,7 +18,7 @@ class UserServices {
       envConfig.accessTokenSecret,
       { expiresIn: "10d" }
     );
-
+    delete user.password;
     const data = {
       accessToken: "Bearer " + accessToken,
       user,
@@ -41,6 +41,10 @@ class UserServices {
   }
   async findRefreshToken(token) {
     const user = await UserModel.findOne({ refresh_token: token });
+    return user;
+  }
+  async updateUser(id, data) {
+    const user = await UserModel.findByIdAndUpdate(id, data, { new: true });
     return user;
   }
 }

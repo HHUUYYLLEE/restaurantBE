@@ -132,7 +132,7 @@ const validateRefreshToken = async (req, res, next) => {
         status: STATUS.UNAUTHORIZED,
       })
     );
-  req.user = user;
+  req.user = user.toJSON();
   return next();
 };
 
@@ -153,6 +153,7 @@ const verifyGoogleLoginCredentials = async (req, res, next) => {
 };
 const validateUserIDProfile = async (req, res, next) => {
   const { id } = req.params;
+  console.log(req.user._id);
   if (req.user._id === id) return next();
   else
     return next(
@@ -161,6 +162,19 @@ const validateUserIDProfile = async (req, res, next) => {
         status: STATUS.UNAUTHORIZED,
       })
     );
+};
+
+const validateUpdateUserProfile = async (req, res, next) => {
+  if (req.body.phone_number) {
+    if (!/^\d+$/.test(req.body.phone_number))
+      return next(
+        new ErrorWithStatus({
+          message: USER.INVALID_PHONE_NUMBER,
+          status: STATUS.UNAUTHORIZED,
+        })
+      );
+  }
+  return next();
 };
 
 module.exports = {
@@ -172,4 +186,5 @@ module.exports = {
   googleDriveUpload,
   verifyGoogleLoginCredentials,
   validateUserIDProfile,
+  validateUpdateUserProfile,
 };

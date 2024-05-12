@@ -31,8 +31,8 @@ const USER = {
   EMAIL_EXIST: "Email existed",
   LOGIN_SUCCESS: "Login success",
   LOGIN_REQUIRED: "Login required",
-  NOT_ADMIN: "You not admin",
   IMAGE_UPLOAD_FAILED: "Upload image failed",
-  GET_PROFILE: "Get user profile successfully",
+  GET_PROFILE: "Getd user profile successfully",
+  UPDATE_SUCCESS: "Updated profile successfully",
 };
 module.exports = { MESSAGE, RESTAURANT, FOOD, USER };

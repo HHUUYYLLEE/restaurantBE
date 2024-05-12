@@ -3,6 +3,7 @@ const userServices = require("../services/user.services");
 const bcrypt = require("bcrypt");
 const { envConfig } = require("../constants/config");
 const jwt = require("jsonwebtoken");
+const drive = require("../utils/googledrivecre");
 
 const registerUser = async (req, res) => {
   let user = {
@@ -29,7 +30,7 @@ const registerUser = async (req, res) => {
   user.refresh_token = refreshToken;
   const userData = await userServices.createUser(user);
   const data = userData.toJSON();
-  const responseData = await userServices.login(data);
+  let responseData = await userServices.login(data);
   res.json({
     message: USER.CREATED,
     data: responseData,
@@ -37,7 +38,8 @@ const registerUser = async (req, res) => {
 };
 
 const loginUser = async (req, res) => {
-  const data = await userServices.login(req.user);
+  let data = await userServices.login(req.user);
+
   res.json({
     message: USER.LOGIN_SUCCESS,
     data,
@@ -75,7 +77,9 @@ const loginUserGoogle = async (req, res) => {
       envConfig.refreshTokenSecret
     );
     user.refresh_token = refreshToken;
-    const data = await userServices.createUser(user);
+    let userData = await userServices.createUser(user);
+    const data = userData.toJSON();
+    let responseData = await userServices.login(data);
     res.json({
       message: USER.CREATED,
       data,
@@ -83,12 +87,39 @@ const loginUserGoogle = async (req, res) => {
   }
 };
 const getUserProfile = async (req, res) => {
+  delete req.user.password;
   res.json({ message: USER.GET_PROFILE, user: req.user });
 };
+const updateUserProfile = async (req, res) => {
+  const data = {
+    username: req.body.username || "newUser",
+    phone_number: req.body.phone_number || "",
+    address: req.body.address || "Somewhere",
+  };
+  const userData = await userServices.updateUser(req.user._id, data);
+  let user = userData.toJSON();
+  delete user.password;
+  res.json({ message: USER.UPDATE_SUCCESS, user });
+};
 
+const updateUserAvatar = async (req, res) => {
+  if (req.user.avatar_url.includes("drive.google.com/thumbnail"))
+    await drive.files.delete({
+      fileId: req.user.avatar_url.split("drive.google.com/thumbnail?id=")[1],
+    });
+  const data = {
+    avatar_url: req.fileURL,
+  };
+  const userData = await userServices.updateUser(req.user._id, data);
+  let user = userData.toJSON();
+  delete user.password;
+  res.json({ message: USER.UPDATE_SUCCESS, user });
+};
 module.exports = {
   loginUser,
   registerUser,
   loginUserGoogle,
   getUserProfile,
+  updateUserProfile,
+  updateUserAvatar,
 };
