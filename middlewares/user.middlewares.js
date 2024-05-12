@@ -9,6 +9,8 @@ const { envConfig } = require("../constants/config");
 const userServices = require("../services/user.services");
 const drive = require("../utils/googledrivecre");
 const stream = require("stream");
+const { OAuth2Client } = require("google-auth-library");
+const googleDriveURL = require("../utils/googleDriveURL");
 
 const userAvatarValidator = async (req, res, next) => {
   //   console.log(typeof req.file);
@@ -41,7 +43,7 @@ const googleDriveUpload = async (req, res, next) => {
       fields: "id",
     });
 
-    req.fileID = uploadFile.data.id;
+    req.fileURL = googleDriveURL(uploadFile.data.id);
   } catch (err) {
     next(new Error(USER.IMAGE_UPLOAD_FAILED));
   }
@@ -128,6 +130,22 @@ const validateRefreshToken = async (req, res, next) => {
   next();
 };
 
+const verifyGoogleLoginCredentials = async (req, res, next) => {
+  try {
+    const client = new OAuth2Client(envConfig.clientID);
+
+    req.userTicket = await client.verifyIdToken({
+      idToken: req.body.credential,
+      audience: envConfig.clientID,
+    });
+    // console.log(req.userTicket);
+
+    next();
+  } catch (error) {
+    next(new Error(USER.GOOGLE_CREDENTIAL_INVALID));
+  }
+};
+
 module.exports = {
   loginValidator,
   userAvatarValidator,
@@ -135,4 +153,5 @@ module.exports = {
   validateAccessToken,
   validateRefreshToken,
   googleDriveUpload,
+  verifyGoogleLoginCredentials,
 };

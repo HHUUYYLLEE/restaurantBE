@@ -19,6 +19,7 @@ const FOOD = {
   IMAGE_UPLOAD_FAILED: "Upload image failed",
 };
 const USER = {
+  GOOGLE_CREDENTIAL_INVALID: "Invalid google credential",
   CREATED: "User successfully created",
   INVALID_REQUEST: "Invalid user request",
   NOT_FOUND: "User not found",

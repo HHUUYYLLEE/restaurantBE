@@ -2,12 +2,15 @@ const express = require("express");
 const {
   loginValidator,
   registerValidator,
-  validateAccessToken,
-  validateRefreshToken,
   googleDriveUpload,
   userAvatarValidator,
+  verifyGoogleLoginCredentials,
 } = require("../middlewares/user.middlewares");
-const { loginUser, registerUser } = require("../controllers/user.controllers");
+const {
+  loginUser,
+  registerUser,
+  loginUserGoogle,
+} = require("../controllers/user.controllers");
 const wrapRequestHandler = require("../utils/handlers");
 const upload = require("../utils/multer");
 
@@ -21,5 +24,10 @@ router.post(
   wrapRequestHandler(registerUser)
 );
 
+router.post(
+  "/loginGoogle",
+  verifyGoogleLoginCredentials,
+  wrapRequestHandler(loginUserGoogle)
+);
 router.post("/login", loginValidator, wrapRequestHandler(loginUser));
 module.exports = router;

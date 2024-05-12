@@ -5,9 +5,10 @@ const { envConfig } = require("../constants/config");
 const validate = require("../utils/validation");
 const { RESTAURANT, USER } = require("../constants/message");
 const STATUS = require("../constants/status");
+const googleDriveURL = require("../utils/googleDriveURL");
 const drive = require("../utils/googledrivecre");
 const googleDriveUpload = async (req, res, next) => {
-  req.fileIDs = [];
+  req.fileURLs = [];
   const images = req.files;
   // console.log(images);
   for (const [key, value] of Object.entries(images)) {
@@ -37,7 +38,7 @@ const googleDriveUpload = async (req, res, next) => {
       });
 
       // console.log("ID:", uploadFile.data.id);
-      req.fileIDs.push(uploadFile.data.id);
+      req.fileURLs.push(googleDriveURL(uploadFile.data.id));
       // console.log("fileIDs:");
       // console.log(req.fileIDs);
     } catch (err) {

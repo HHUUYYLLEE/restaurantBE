@@ -7,7 +7,7 @@ const { FOOD, USER } = require("../constants/message");
 const { envConfig } = require("../constants/config");
 const restaurantServices = require("../services/restaurant.services");
 const { ErrorWithStatus } = require("../utils/errors");
-
+const googleDriveURL = require("../utils/googleDriveURL");
 const googleDriveUpload = async (req, res, next) => {
   const image = req.file;
   let bufferStream = new stream.PassThrough();
@@ -31,7 +31,7 @@ const googleDriveUpload = async (req, res, next) => {
       fields: "id",
     });
 
-    req.fileID = uploadFile.data.id;
+    req.fileURL = googleDriveURL(uploadFile.data.id);
   } catch (err) {
     next(new Error(FOOD.IMAGE_UPLOAD_FAILED));
   }

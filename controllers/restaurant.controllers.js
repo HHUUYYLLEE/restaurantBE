@@ -33,7 +33,7 @@ const createRestaurant = async (req, res) => {
     afternoon_open_time,
     afternoon_closed_time,
     status,
-    main_avatar_url: req.fileIDs[0],
+    main_avatar_url: req.fileURLs[0],
     lat,
     lng,
   });
@@ -45,7 +45,7 @@ const createRestaurant = async (req, res) => {
   } else
     await restaurantSubImagesServices.createRestaurantSubImages({
       restaurant_id: newRestaurant._id,
-      images: req.fileIDs.slice(1, 5),
+      images: req.fileURLs.slice(1, 5),
     });
 
   res.json({ message: RESTAURANT.CREATED, newRestaurant });
