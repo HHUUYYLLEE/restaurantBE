@@ -7,13 +7,8 @@ class UserServices {
     const accessToken = await jwt.sign(
       {
         _id: user._id,
-        password: user.password,
-        phone_number: user.phone_number,
+
         email: user.email,
-        role: user.role,
-        username: user.username,
-        avatar_url: user.avatar_url,
-        address: user.address,
       },
       envConfig.accessTokenSecret,
       { expiresIn: "10d" }

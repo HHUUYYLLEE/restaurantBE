@@ -32,7 +32,7 @@ const USER = {
   LOGIN_SUCCESS: "Login success",
   LOGIN_REQUIRED: "Login required",
   IMAGE_UPLOAD_FAILED: "Upload image failed",
-  GET_PROFILE: "Getd user profile successfully",
+  GET_PROFILE: "Get user profile successfully",
   UPDATE_SUCCESS: "Updated profile successfully",
 };
 module.exports = { MESSAGE, RESTAURANT, FOOD, USER };

@@ -87,8 +87,10 @@ const loginUserGoogle = async (req, res) => {
   }
 };
 const getUserProfile = async (req, res) => {
-  delete req.user.password;
-  res.json({ message: USER.GET_PROFILE, user: req.user });
+  const userData = await userServices.getUserFromId(req.user._id);
+  const user = userData.toJSON();
+  delete user.password;
+  res.json({ message: USER.GET_PROFILE, user });
 };
 const updateUserProfile = async (req, res) => {
   const data = {
@@ -103,6 +105,7 @@ const updateUserProfile = async (req, res) => {
 };
 
 const updateUserAvatar = async (req, res) => {
+  // console.log(req.user.avatar_url);
   if (req.user.avatar_url.includes("drive.google.com/thumbnail"))
     await drive.files.delete({
       fileId: req.user.avatar_url.split("drive.google.com/thumbnail?id=")[1],

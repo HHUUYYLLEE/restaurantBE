@@ -28,11 +28,11 @@ const googleDriveUpload = async (req, res, next) => {
     let filename = Date.now() + Math.random() + "user";
     filename = filename.replace(/\./g, "");
     const metaData = {
-      name: filename + ".jpg",
+      name: filename + ".png",
       parents: [envConfig.user_folder_id], // the ID of the folder you get from createFolder.js is used here
     };
     const media = {
-      mimeType: "image/jpeg",
+      mimeType: "image/png",
       body: bufferStream, // the image sent through multer will be uploaded to Drive
     };
 
@@ -104,12 +104,15 @@ const validateAccessToken = async (req, res, next) => {
     jwt.verify(
       req.temporaryToken,
       envConfig.accessTokenSecret,
-      (err, decoded) => {
+      async (err, decoded) => {
         if (err) {
           req.needToVerifyRefreshToken = true;
           return next();
         }
-        req.user = decoded;
+        console.log(decoded._id);
+        const user = await userServices.getUserFromId(decoded._id);
+        req.user = user.toJSON();
+        req.user._id = req.user._id.valueOf();
         return next();
       }
     );

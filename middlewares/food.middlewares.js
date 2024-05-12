@@ -16,11 +16,11 @@ const googleDriveUpload = async (req, res, next) => {
     let filename = Date.now() + Math.random() + "food";
     filename = filename.replace(/\./g, "");
     const metaData = {
-      name: filename + ".jpg",
+      name: filename + ".png",
       parents: [envConfig.food_folder_id], // the ID of the folder you get from createFolder.js is used here
     };
     const media = {
-      mimeType: "image/jpeg",
+      mimeType: "image/png",
       body: bufferStream, // the image sent through multer will be uploaded to Drive
     };
 
