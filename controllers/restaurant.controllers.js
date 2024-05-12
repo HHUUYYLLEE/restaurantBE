@@ -97,4 +97,21 @@ const getRestaurant = async (req, res) => {
   }
   res.json({ message: RESTAURANT.FOUND, restaurant });
 };
-module.exports = { createRestaurant, getAllRestaurants, getRestaurant };
+const getAllUserRestaurants = async (req, res) => {
+  const { id } = req.params;
+  const restaurants = await restaurantServices.findAllUserRestaurants(id);
+  if (!restaurants) {
+    throw new ErrorWithStatus({
+      message: RESTAURANT.NOT_FOUND,
+      status: STATUS.NOT_FOUND,
+    });
+  }
+  res.json({ message: RESTAURANT.FOUND, restaurants });
+};
+
+module.exports = {
+  createRestaurant,
+  getAllRestaurants,
+  getRestaurant,
+  getAllUserRestaurants,
+};

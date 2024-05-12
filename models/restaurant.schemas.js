@@ -15,8 +15,8 @@ const RestaurantSchema = new mongoose.Schema(
     afternoon_closed_time: { type: String, required: false },
     status: { type: Number, required: true },
     main_avatar_url: { type: String, maxlength: 160, required: false },
-    lat: { type: mongoose.Decimal128, maxlength: 160, required: true },
-    lng: { type: mongoose.Decimal128, maxlength: 160, required: true },
+    lat: { type: String, maxlength: 160, required: true },
+    lng: { type: String, maxlength: 160, required: true },
   },
   {
     timestamps: true,

@@ -6,6 +6,7 @@ const {
   createRestaurant,
   getAllRestaurants,
   getRestaurant,
+  getAllUserRestaurants,
 } = require("../controllers/restaurant.controllers");
 const {
   createRestaurantSchemaValidator,
@@ -15,6 +16,7 @@ const {
   googleDriveUpload,
   tokenValidatingResult,
   getRestaurantValidator,
+  getAllUserRestaurantsValidator,
 } = require("../middlewares/restaurant.middlewares");
 const {
   validateAccessToken,
@@ -40,6 +42,11 @@ router.post(
 );
 
 router.get("/:id", getRestaurantValidator, wrapRequestHandler(getRestaurant));
+router.get(
+  "/restaurants/:id",
+  getAllUserRestaurantsValidator,
+  wrapRequestHandler(getAllUserRestaurants)
+);
 router.get(
   "/",
   getAllRestaurantsValidator,

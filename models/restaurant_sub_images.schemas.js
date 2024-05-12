@@ -4,7 +4,6 @@ const RestaurantSubImagesSchema = new mongoose.Schema(
   {
     restaurant_id: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "restaurant",
       required: true,
     },
     images: [{ type: String, maxlength: 160 }],

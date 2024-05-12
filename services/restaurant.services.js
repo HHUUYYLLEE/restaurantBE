@@ -23,6 +23,9 @@ class RestaurantServices {
     const restaurant = await RestaurantModel.findById(id);
     return restaurant;
   }
+  async findAllUserRestaurants(user_id) {
+    return RestaurantModel.find({ user_id: user_id });
+  }
 }
 
 const restaurantServices = new RestaurantServices();
