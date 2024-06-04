@@ -16,6 +16,8 @@ const createRestaurant = async (req, res) => {
     status,
     lat,
     lng,
+    number_of_tables,
+    number_of_chairs,
   } = req.body;
   const user_id = req.user._id;
   if (!(await userServices.getUserFromId(user_id)))
@@ -36,6 +38,8 @@ const createRestaurant = async (req, res) => {
     main_avatar_url: req.fileURLs[0],
     lat,
     lng,
+    number_of_tables,
+    number_of_chairs,
   });
   if (!newRestaurant) {
     throw new ErrorWithStatus({
@@ -95,7 +99,12 @@ const getRestaurant = async (req, res) => {
       status: STATUS.NOT_FOUND,
     });
   }
-  res.json({ message: RESTAURANT.FOUND, restaurant });
+  const restaurantSubImages =
+    await restaurantSubImagesServices.findRestaurantSubImages(id);
+  // console.log(restaurantSubImages);
+  let restaurantData = restaurant.toJSON();
+  restaurantData.images = restaurantSubImages.toJSON().images;
+  res.json({ message: RESTAURANT.FOUND, restaurant: restaurantData });
 };
 const getAllUserRestaurants = async (req, res) => {
   const { id } = req.params;
@@ -106,7 +115,7 @@ const getAllUserRestaurants = async (req, res) => {
       status: STATUS.NOT_FOUND,
     });
   }
-  res.json({ message: RESTAURANT.FOUND, restaurants });
+  res.json({ message: RESTAURANT.FOUND_ALL, restaurants });
 };
 
 module.exports = {

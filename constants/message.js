@@ -6,7 +6,8 @@ const RESTAURANT = {
   INVALID_REQUEST: "Invalid restaurant request",
   NOT_CREATED: "Restaurant not created",
   CREATED: "Restaurant successfully created",
-  FOUND: "Get all restaurants successfully",
+  FOUND_ALL: "Get all restaurants successfully",
+  FOUND: "Get restaurant successfully",
   IMAGES_UPLOAD_FAILED: "Upload images failed",
   INVALID_TIME: "Invalid time for open/close",
 };

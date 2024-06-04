@@ -109,7 +109,7 @@ const validateAccessToken = async (req, res, next) => {
           req.needToVerifyRefreshToken = true;
           return next();
         }
-        console.log(decoded._id);
+        // console.log(decoded._id);
         const user = await userServices.getUserFromId(decoded._id);
         req.user = user.toJSON();
         req.user._id = req.user._id.valueOf();

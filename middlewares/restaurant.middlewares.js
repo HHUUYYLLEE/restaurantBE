@@ -204,6 +204,14 @@ const createRestaurantSchemaValidator = validate(
       },
       trim: true,
     },
+    number_of_tables: {
+      notEmpty: true,
+      isNumeric: true,
+    },
+    number_of_chairs: {
+      notEmpty: true,
+      isNumeric: true,
+    },
   }),
   ["body"]
 );

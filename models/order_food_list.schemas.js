@@ -2,9 +2,15 @@ const mongoose = require("mongoose");
 
 const OrderFoodListSchema = new mongoose.Schema(
   {
-    ward: { type: String },
-    code: { type: String },
-    parent_code: { type: String },
+    order_food_menu_id: {
+      type: mongoose.Schema.Types.ObjectId,
+      required: true,
+    },
+    food_id: {
+      type: mongoose.Schema.Types.ObjectId,
+      required: true,
+    },
+    quantity: { type: Number, required: true },
   },
   {
     timestamps: true,

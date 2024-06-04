@@ -5,6 +5,9 @@ class RestaurantSubImagesServices {
     const newRestaurantSubImages = await RestaurantSubImagesModel.create(obj);
     return newRestaurantSubImages;
   }
+  async findRestaurantSubImages(id) {
+    return await RestaurantSubImagesModel.findOne({ restaurant_id: id });
+  }
 }
 
 const restaurantSubImagesServices = new RestaurantSubImagesServices();
