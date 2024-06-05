@@ -57,8 +57,8 @@ const createRestaurant = async (req, res) => {
 
 const getAllRestaurants = async (req, res) => {
   let { search, page, limit } = req.query;
-  page = parseInt(page) || 1;
-  limit = parseInt(limit) || 10;
+  // page = parseInt(page) || 1;
+  // limit = parseInt(limit) || 10;
   let conditions = {};
   if (search) {
     conditions.$or = [

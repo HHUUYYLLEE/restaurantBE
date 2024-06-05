@@ -5,13 +5,20 @@ class RestaurantServices {
     return newRestaurant;
   }
   async getAllRestaurants({ conditions, page, limit }) {
-    const restaurants = await RestaurantModel.find(conditions)
-      .skip((page - 1) * limit)
-      .limit(limit);
+    let restaurants;
+    if (page && limit) {
+      restaurants = await RestaurantModel.find(conditions)
+        .skip((page - 1) * limit)
+        .limit(limit);
+
+      const total = await RestaurantModel.countDocuments(conditions);
+      const totalPages = Math.ceil(total / limit);
+      return { restaurants, totalPages };
+    } else restaurants = await RestaurantModel.find(conditions);
 
     const total = await RestaurantModel.countDocuments(conditions);
-    const totalPages = Math.ceil(total / limit);
-    return { restaurants, totalPages };
+
+    return { restaurants, total };
   }
   async findRestaurantUserMatch(user_id, restaurant_id) {
     return RestaurantModel.findOne({
