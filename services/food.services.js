@@ -21,12 +21,12 @@ class FoodServices {
   }
   async getAllFoodInRestaurant(id, page, limit) {
     const allFoodInRestaurant = await FoodModel.find({
-      restaurant_id: new mongoose.Types.ObjectId(id),
+      restaurant_id: id,
     })
       .skip((page - 1) * limit)
       .limit(limit);
     const total = await FoodModel.countDocuments({
-      restaurant_id: new mongoose.Types.ObjectId(id),
+      restaurant_id: id,
     });
     console.log(limit);
     const totalPages = Math.ceil(total / limit);

@@ -36,4 +36,14 @@ const USER = {
   GET_PROFILE: "Get user profile successfully",
   UPDATE_SUCCESS: "Updated profile successfully",
 };
-module.exports = { MESSAGE, RESTAURANT, FOOD, USER };
+const ORDER_FOOD = {
+  CREATE_SUCCESS: "Created order successfully",
+  UPDATE_SUCCESS: "Updated order successfully",
+  NOT_FOUND: "Order not found",
+  NOT_CREATED: "Order not created",
+  DELETE_SUCCESS: "Removed order successfully",
+  INVALID_REQUEST: "Invalid order request",
+  FOUND: "Get order successfully",
+  PLACE_SUCCESS: "Placed order successfully",
+};
+module.exports = { MESSAGE, RESTAURANT, FOOD, USER, ORDER_FOOD };

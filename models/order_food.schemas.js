@@ -10,9 +10,12 @@ const OrderFoodSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       required: true,
     },
-    memo: { type: String, maxlength: 1000, required: true },
+    memo: { type: String, maxlength: 1000 },
     status: { type: Number, required: true },
     total_price: { type: Number, required: true },
+    address: { type: String, maxlength: 250 },
+    lat: { type: String, maxlength: 160 },
+    lng: { type: String, maxlength: 160 },
   },
   {
     timestamps: true,

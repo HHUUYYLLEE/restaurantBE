@@ -2,9 +2,10 @@ const express = require("express");
 const router = express.Router();
 const wrapRequestHandler = require("../utils/handlers");
 const {
-  createOrderFood,
+  updateOrderFood,
   getAllOrderFood,
   getOrderFood,
+  placeAnOrder,
 } = require("../controllers/order_food.controllers");
 const {
   createOrderFoodValidator,
@@ -12,6 +13,8 @@ const {
   getAllOrderFoodValidator,
   getOrderFoodValidator,
   findFoodValidator,
+  placeOrderFoodValidator,
+  placeOrderFoodValidatorForm,
 } = require("../middlewares/order_food.middlewares");
 const {
   validateAccessToken,
@@ -25,9 +28,32 @@ router.post(
   validateRefreshToken,
   tokenValidatingResult,
   findFoodValidator,
-  wrapRequestHandler(createOrderFood)
+  wrapRequestHandler(updateOrderFood)
 );
-router.get("/:id", getOrderFoodValidator, wrapRequestHandler(getOrderFood));
+router.get(
+  "/:id",
+  validateAccessToken,
+  validateRefreshToken,
+  tokenValidatingResult,
+  getOrderFoodValidator,
+  wrapRequestHandler(getOrderFood)
+);
 
-router.get("/", getAllOrderFoodValidator, wrapRequestHandler(getAllOrderFood));
+router.get(
+  "/",
+  validateAccessToken,
+  validateRefreshToken,
+  tokenValidatingResult,
+  getAllOrderFoodValidator,
+  wrapRequestHandler(getAllOrderFood)
+);
+router.post(
+  "/placeorder",
+  placeOrderFoodValidatorForm,
+  validateAccessToken,
+  validateRefreshToken,
+  tokenValidatingResult,
+  placeOrderFoodValidator,
+  wrapRequestHandler(placeAnOrder)
+);
 module.exports = router;

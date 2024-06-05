@@ -11,17 +11,15 @@ const path = require("path");
 const userRoutes = require("./routes/user.routes");
 const restaurantRoutes = require("./routes/restaurant.routes");
 const foodRoutes = require("./routes/food.routes");
-// const adminRoutes = require("./routes/admin.routes");
-// const hostRoutes = require("./routes/host.routes");
-// const addressRoutes = require("./routes/address.routes");
+const orderFoodRoutes = require("./routes/order_food.routes");
 const defaultErrorHander = require("./middlewares/error.middlewares");
 
 const port = envConfig.port;
 const app = express();
 
 const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100, // Limit each IP to 100 requests per `window` (here, per 15 minutes)
+  windowMs: 1 * 60 * 1000, // 15 minutes
+  max: 10000, // Limit each IP to 100 requests per `window` (here, per 15 minutes)
   standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
   legacyHeaders: false, // Disable the `X-RateLimit-*` headers
   // store: ... , // Use an external store for more precise rate limiting
@@ -30,7 +28,7 @@ const limiter = rateLimit({
 connectDB();
 
 app.set("trust proxy", 1); // Trust first proxy
-app.use(limiter);
+// app.use(limiter);
 app.use(morgan("combined"));
 app.use(helmet());
 app.use(cors());
@@ -40,7 +38,7 @@ app.use(bodyParser.json());
 app.use("/api/user", userRoutes);
 app.use("/api/restaurant", restaurantRoutes);
 app.use("/api/food", foodRoutes);
-// app.use("/api/v1/admin", adminRoutes);
+app.use("/api/order_food", orderFoodRoutes);
 // app.use("/api/v1/host", hostRoutes);
 // app.use("/api/v1/address", addressRoutes);
 
