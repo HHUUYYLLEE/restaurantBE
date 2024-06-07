@@ -14,6 +14,7 @@ const registerUser = async (req, res) => {
     phone_number: req.body.phone_number || "",
     address: req.body.address || "Somewhere",
     avatar_url: req.fileURL,
+    status: 1,
   };
   const refreshToken = await jwt.sign(
     {
@@ -63,6 +64,7 @@ const loginUserGoogle = async (req, res) => {
       phone_number: "",
       address: "Somewhere",
       avatar_url: req.userTicket.payload.picture,
+      status: 1,
     };
     const refreshToken = await jwt.sign(
       {

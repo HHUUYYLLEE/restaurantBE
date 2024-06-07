@@ -14,6 +14,7 @@ const UserSchema = new mongoose.Schema(
     address: { type: String, maxlength: 250, required: false },
     avatar_url: { type: String, maxlength: 160, required: false },
     refresh_token: { type: String, required: true },
+    status: { type: Number, required: true },
   },
   {
     timestamps: true,

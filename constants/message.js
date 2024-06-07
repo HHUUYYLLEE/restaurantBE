@@ -35,6 +35,7 @@ const USER = {
   IMAGE_UPLOAD_FAILED: "Upload image failed",
   GET_PROFILE: "Get user profile successfully",
   UPDATE_SUCCESS: "Updated profile successfully",
+  LOCKED: "Account locked",
 };
 const ORDER_FOOD = {
   CREATE_SUCCESS: "Created order successfully",

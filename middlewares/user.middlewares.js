@@ -78,7 +78,7 @@ const registerValidator = validate(
       notEmpty: true,
       trim: true,
     },
-    phone_number: { trim: true },
+    phone_number: { notEmpty: true, trim: true },
     address: { trim: true },
     username: { trim: true },
   }),
@@ -112,6 +112,13 @@ const validateAccessToken = async (req, res, next) => {
         // console.log(decoded._id);
         const user = await userServices.getUserFromId(decoded._id);
         req.user = user.toJSON();
+        if (user.status === 0)
+          return next(
+            new ErrorWithStatus({
+              message: USER.LOCKED,
+              status: STATUS.UNAUTHORIZED,
+            })
+          );
         req.user._id = req.user._id.valueOf();
         return next();
       }
