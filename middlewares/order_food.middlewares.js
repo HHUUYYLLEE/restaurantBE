@@ -21,6 +21,8 @@ const tokenValidatingResult = async (req, res, next) => {
 const findFoodValidator = async (req, res, next) => {
   let { food_id, quantity } = req.body;
   const food = await foodServices.getFood(food_id);
+
+  let currentOrderFoodList;
   if (food) {
     quantity = parseInt(quantity);
 
@@ -44,9 +46,11 @@ const findFoodValidator = async (req, res, next) => {
     }
     pendingUserOrderRestaurant = pendingUserOrderRestaurant.toJSON();
     req.order_food_menu_id = pendingUserOrderRestaurant._id.toString();
-    let currentOrderFoodList = await orderFoodListServices.findOrderByFood(
-      food_id
-    );
+    currentOrderFoodList =
+      await orderFoodListServices.findOrderByFoodAndOrderPair(
+        req.order_food_menu_id,
+        food_id
+      );
     if (currentOrderFoodList.length === 0) {
       if (quantity === 0)
         return next(
@@ -71,6 +75,7 @@ const findFoodValidator = async (req, res, next) => {
           return next();
         } else {
           req.controlmode = 4;
+
           req.orderComponent = orderComponent;
           req.pendingUserOrderRestaurant = pendingUserOrderRestaurant;
           req.currentOrderFoodList = currentOrderFoodList;

@@ -1,9 +1,10 @@
-const { RESTAURANT, USER } = require("../constants/message");
+const { RESTAURANT, USER, FOOD } = require("../constants/message");
 const STATUS = require("../constants/status");
 const { ErrorWithStatus } = require("../utils/errors");
 const restaurantServices = require("../services/restaurant.services");
 const restaurantSubImagesServices = require("../services/restaurant_sub_images.services");
 const userServices = require("../services/user.services");
+const foodServices = require("../services/food.services");
 const createRestaurant = async (req, res) => {
   const {
     name,
@@ -16,8 +17,7 @@ const createRestaurant = async (req, res) => {
     status,
     lat,
     lng,
-    number_of_tables,
-    number_of_chairs,
+    table_chair,
   } = req.body;
   const user_id = req.user._id;
   if (!(await userServices.getUserFromId(user_id)))
@@ -38,8 +38,7 @@ const createRestaurant = async (req, res) => {
     main_avatar_url: req.fileURLs[0],
     lat,
     lng,
-    number_of_tables,
-    number_of_chairs,
+    table_chair,
   });
   if (!newRestaurant) {
     throw new ErrorWithStatus({
@@ -61,12 +60,7 @@ const getAllRestaurants = async (req, res) => {
   // limit = parseInt(limit) || 10;
   let conditions = {};
   if (search) {
-    conditions.$or = [
-      { name: { $regex: search, $options: "i" } },
-      { address: { $regex: search, $options: "i" } },
-      // { describe: { $regex: search, $options: "i" } },
-      // { full_field: { $regex: search, $options: "i" } },
-    ];
+    conditions.$or = [{ name: { $regex: search, $options: "i" } }];
   }
   // console.log(conditions);
   const { restaurants, totalPages } =
@@ -118,9 +112,55 @@ const getAllUserRestaurants = async (req, res) => {
   res.json({ message: RESTAURANT.FOUND_ALL, restaurants });
 };
 
+const searchRestaurantsAndFood = async (req, res) => {
+  let { search, mode } = req.query;
+  if (!mode) mode = 1;
+  // console.log("this");
+  let conditions = {};
+  conditions.$or = [
+    { name: { $regex: search, $options: "i" } },
+    { desc: { $regex: search, $options: "i" } },
+  ];
+
+  // console.log(conditions);
+  let { restaurants } = await restaurantServices.getAllRestaurants({
+    conditions,
+    page: "",
+    limit: "",
+  });
+  conditions.$or = [{ name: { $regex: search, $options: "i" } }];
+  const allFood = await foodServices.getAllFood({
+    conditions,
+    page: "",
+    limit: "",
+  });
+  if (!restaurants && !allFood) {
+    throw new ErrorWithStatus({
+      message: RESTAURANT.NOT_FOUND + " and " + FOOD.NOT_FOUND,
+      status: STATUS.NOT_FOUND,
+    });
+  }
+  if (mode === 1) {
+    let data = [];
+    if (restaurants) data = data.concat(restaurants);
+    if (allFood) data = data.concat(allFood);
+    res.json({
+      message: RESTAURANT.FOUND + " and " + FOOD.FOUND,
+      data,
+    });
+  } else {
+    res.json({
+      message: RESTAURANT.FOUND + " and " + FOOD.FOUND,
+      restaurants,
+      allFood,
+    });
+  }
+};
+
 module.exports = {
   createRestaurant,
   getAllRestaurants,
   getRestaurant,
   getAllUserRestaurants,
+  searchRestaurantsAndFood,
 };

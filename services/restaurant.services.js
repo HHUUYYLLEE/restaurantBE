@@ -6,8 +6,7 @@ class RestaurantServices {
   }
   async getAllRestaurants({ conditions, page, limit }) {
     let restaurants;
-    console.log(page);
-    if (page && limit) {
+    if (page !== "" && limit !== "") {
       restaurants = await RestaurantModel.find(conditions)
         .skip((page - 1) * limit)
         .limit(limit);

@@ -7,6 +7,7 @@ const {
   getAllRestaurants,
   getRestaurant,
   getAllUserRestaurants,
+  searchRestaurantsAndFood,
 } = require("../controllers/restaurant.controllers");
 const {
   createRestaurantSchemaValidator,
@@ -17,6 +18,7 @@ const {
   tokenValidatingResult,
   getRestaurantValidator,
   getAllUserRestaurantsValidator,
+  searchRestaurantsAndFoodValidator,
 } = require("../middlewares/restaurant.middlewares");
 const {
   validateAccessToken,
@@ -41,15 +43,21 @@ router.post(
   wrapRequestHandler(createRestaurant)
 );
 
-router.get("/:id", getRestaurantValidator, wrapRequestHandler(getRestaurant));
 router.get(
   "/restaurants/:id",
   getAllUserRestaurantsValidator,
   wrapRequestHandler(getAllUserRestaurants)
 );
 router.get(
+  "/restaurants_and_food",
+  searchRestaurantsAndFoodValidator,
+  wrapRequestHandler(searchRestaurantsAndFood)
+);
+router.get("/:id", getRestaurantValidator, wrapRequestHandler(getRestaurant));
+router.get(
   "/",
   getAllRestaurantsValidator,
   wrapRequestHandler(getAllRestaurants)
 );
+
 module.exports = router;

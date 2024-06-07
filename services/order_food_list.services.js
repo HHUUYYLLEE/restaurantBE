@@ -21,8 +21,11 @@ class OrderFoodListServices {
     const food = orderFoodListModel.find({ order_food_menu_id: id });
     return food;
   }
-  async findOrderByFood(id) {
-    const order = orderFoodListModel.find({ food_id: id });
+  async findOrderByFoodAndOrderPair(order_food_menu_id, food_id) {
+    const order = orderFoodListModel.find({
+      order_food_menu_id: order_food_menu_id,
+      food_id: food_id,
+    });
     return order;
   }
 }

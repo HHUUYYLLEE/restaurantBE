@@ -204,14 +204,6 @@ const createRestaurantSchemaValidator = validate(
       },
       trim: true,
     },
-    number_of_tables: {
-      notEmpty: true,
-      isNumeric: true,
-    },
-    number_of_chairs: {
-      notEmpty: true,
-      isNumeric: true,
-    },
   }),
   ["body"]
 );
@@ -309,6 +301,15 @@ const getAllRestaurantsValidator = validate(
   }),
   ["query"]
 );
+const searchRestaurantsAndFoodValidator = validate(
+  checkSchema({
+    search: {
+      notEmpty: true,
+      trim: true,
+    },
+  }),
+  ["query"]
+);
 
 const getRestaurantValidator = validate(
   checkSchema({
@@ -338,4 +339,5 @@ module.exports = {
   googleDriveUpload,
   createRestaurantDataValidator,
   getAllUserRestaurantsValidator,
+  searchRestaurantsAndFoodValidator,
 };

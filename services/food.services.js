@@ -7,13 +7,16 @@ class FoodServices {
     return newFood;
   }
   async getAllFood({ conditions, page, limit }) {
-    const allFood = await FoodModel.find(conditions)
-      .skip((page - 1) * limit)
-      .limit(limit);
+    let allFood;
+    if (page !== "" && limit !== "") {
+      allFood = await FoodModel.find(conditions)
+        .skip((page - 1) * limit)
+        .limit(limit);
 
-    const total = await FoodModel.countDocuments(conditions);
-    const totalPages = Math.ceil(total / limit);
-    return { allFood, totalPages };
+      const total = await FoodModel.countDocuments(conditions);
+      const totalPages = Math.ceil(total / limit);
+      return { allFood, totalPages };
+    } else return await FoodModel.find(conditions);
   }
   async getFood(id) {
     const food = await FoodModel.findById(id);

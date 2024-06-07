@@ -17,8 +17,7 @@ const RestaurantSchema = new mongoose.Schema(
     main_avatar_url: { type: String, maxlength: 160, required: false },
     lat: { type: String, maxlength: 160, required: true },
     lng: { type: String, maxlength: 160, required: true },
-    number_of_tables: { type: String, maxlength: 160, required: true },
-    number_of_chairs: { type: String, maxlength: 160, required: true },
+    table_chair: [{ type: Object, maxlength: 160 }],
   },
   {
     timestamps: true,
