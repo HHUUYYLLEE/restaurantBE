@@ -6,14 +6,14 @@ const orderFoodServices = require("../services/order_food.services");
 const orderFoodListServices = require("../services/order_food_list.services");
 const foodServices = require("../services/food.services");
 const updateOrderFood = async (req, res) => {
-  let { food_id, quantity } = req.body;
+  let { food_id } = req.body,
+    quantity = req.foodQuantityOrder;
   let newOrderFoodList,
     updateOrderFoodList,
     deleteOrderFoodList,
     currentOrderFoodList,
     total_price,
     pendingUserOrderRestaurant;
-  quantity = parseInt(quantity);
   switch (req.controlmode) {
     case 1:
       let newOrderFood = await orderFoodServices.createOrderFood({
@@ -81,10 +81,25 @@ const updateOrderFood = async (req, res) => {
       });
       break;
     case 3:
+      if (quantity <= 0) {
+        deleteOrderFoodList = await orderFoodListServices.deleteOrderFoodList(
+          req.orderComponent._id.toString()
+        );
+        if (req.currentOrderFoodList.length === 1) {
+          const deleteOrderFood = orderFoodServices.deleteOrderFood(
+            req.orderComponent.order_food_menu_id.toString()
+          );
+        }
+      }
       updateOrderFoodList = await orderFoodListServices.updateOrderFoodList(
         req.orderComponent._id.toString(),
         { quantity: quantity }
       );
+      if (req.currentOrderFoodList.length === 1) {
+        deleteOrderFood = orderFoodServices.deleteOrderFood(
+          req.orderComponent.order_food_menu_id.toString()
+        );
+      }
       currentOrderFoodList = await orderFoodListServices.findFoodByOrder(
         req.order_food_menu_id
       );
@@ -103,30 +118,7 @@ const updateOrderFood = async (req, res) => {
         order_food_list: updateOrderFoodList,
       });
       break;
-    case 4:
-      deleteOrderFoodList = await orderFoodListServices.deleteOrderFoodList(
-        req.orderComponent._id.toString()
-      );
-      if (req.currentOrderFoodList.length === 1) {
-        const deleteOrderFood = orderFoodServices.deleteOrderFood(
-          req.orderComponent.order_food_menu_id.toString()
-        );
-      } else {
-        currentOrderFoodList = await orderFoodListServices.findFoodByOrder(
-          req.order_food_menu_id
-        );
-        total_price = 0;
-        for (foodData of currentOrderFoodList) {
-          const food = await foodServices.getFood(foodData.food_id.toString());
-          total_price += parseInt(foodData.quantity) * parseInt(food.price);
-        }
-        pendingUserOrderRestaurant = await orderFoodServices.updateOrderFood(
-          req.order_food_menu_id,
-          { total_price }
-        );
-      }
-      res.json({ message: ORDER_FOOD.DELETE_SUCCESS });
-      break;
+
     default:
       res.json({ message: "temp" });
       break;

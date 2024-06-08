@@ -4,16 +4,17 @@ const upload = require("../utils/multer");
 const wrapRequestHandler = require("../utils/handlers");
 const {
   createRestaurant,
-  getAllRestaurants,
+  getAllConditionRestaurants,
   getRestaurant,
   getAllUserRestaurants,
   searchRestaurantsAndFood,
+  getRandomRestaurants,
 } = require("../controllers/restaurant.controllers");
 const {
   createRestaurantSchemaValidator,
   createRestaurantDataValidator,
   restaurantImageValidator,
-  getAllRestaurantsValidator,
+  getAllConditionRestaurantsValidator,
   googleDriveUpload,
   tokenValidatingResult,
   getRestaurantValidator,
@@ -53,11 +54,12 @@ router.get(
   searchRestaurantsAndFoodValidator,
   wrapRequestHandler(searchRestaurantsAndFood)
 );
+router.get("/random_restaurants", wrapRequestHandler(getRandomRestaurants));
 router.get("/:id", getRestaurantValidator, wrapRequestHandler(getRestaurant));
 router.get(
   "/",
-  getAllRestaurantsValidator,
-  wrapRequestHandler(getAllRestaurants)
+  getAllConditionRestaurantsValidator,
+  wrapRequestHandler(getAllConditionRestaurants)
 );
 
 module.exports = router;

@@ -54,7 +54,7 @@ const createRestaurant = async (req, res) => {
   res.json({ message: RESTAURANT.CREATED, newRestaurant });
 };
 
-const getAllRestaurants = async (req, res) => {
+const getAllConditionRestaurants = async (req, res) => {
   let { search, page, limit } = req.query;
   // page = parseInt(page) || 1;
   // limit = parseInt(limit) || 10;
@@ -64,7 +64,7 @@ const getAllRestaurants = async (req, res) => {
   }
   // console.log(conditions);
   const { restaurants, totalPages } =
-    await restaurantServices.getAllRestaurants({
+    await restaurantServices.getAllConditionRestaurants({
       conditions,
       page,
       limit,
@@ -83,7 +83,28 @@ const getAllRestaurants = async (req, res) => {
     limit,
   });
 };
+const getRandomRestaurants = async (req, res) => {
+  const restaurants = await restaurantServices.getAllRestaurants();
+  if (!restaurants) {
+    throw new ErrorWithStatus({
+      message: RESTAURANT.NOT_FOUND,
+      status: STATUS.NOT_FOUND,
+    });
+  }
 
+  for (let i = restaurants.restaurants.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [restaurants.restaurants[i], restaurants.restaurants[j]] = [
+      restaurants.restaurants[j],
+      restaurants.restaurants[i],
+    ];
+  }
+  restaurants.restaurants.splice(10);
+  res.json({
+    message: RESTAURANT.FOUND,
+    restaurants,
+  });
+};
 const getRestaurant = async (req, res) => {
   const { id } = req.params;
   const restaurant = await restaurantServices.getRestaurant(id);
@@ -113,22 +134,38 @@ const getAllUserRestaurants = async (req, res) => {
 };
 
 const searchRestaurantsAndFood = async (req, res) => {
-  let { search, mode } = req.query;
+  let { search, address, mode } = req.query;
+
   if (!mode) mode = 1;
   // console.log("this");
   let conditions = {};
-  conditions.$or = [
-    { name: { $regex: search, $options: "i" } },
-    { desc: { $regex: search, $options: "i" } },
-  ];
+  if (address && search)
+    conditions.$and = [
+      {
+        $or: [
+          { name: { $regex: search, $options: "i" } },
+          { desc: { $regex: search, $options: "i" } },
+        ],
+      },
+      { address: { $regex: address, $options: "i" } },
+    ];
+  else if (search) {
+    conditions.$or = [
+      { name: { $regex: search, $options: "i" } },
+      { desc: { $regex: search, $options: "i" } },
+      { address: { $regex: search, $options: "i" } },
+    ];
+  } else if (address) {
+    conditions.$or = [{ address: { $regex: address, $options: "i" } }];
+  }
 
   // console.log(conditions);
-  let { restaurants } = await restaurantServices.getAllRestaurants({
+  let { restaurants } = await restaurantServices.getAllConditionRestaurants({
     conditions,
     page: "",
     limit: "",
   });
-  conditions.$or = [{ name: { $regex: search, $options: "i" } }];
+  if (search) conditions.$or = [{ name: { $regex: search, $options: "i" } }];
   const allFood = await foodServices.getAllFood({
     conditions,
     page: "",
@@ -159,8 +196,9 @@ const searchRestaurantsAndFood = async (req, res) => {
 
 module.exports = {
   createRestaurant,
-  getAllRestaurants,
+  getAllConditionRestaurants,
   getRestaurant,
   getAllUserRestaurants,
   searchRestaurantsAndFood,
+  getRandomRestaurants,
 };

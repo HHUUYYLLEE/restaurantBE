@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const OrderChairSchema = new mongoose.Schema(
+const OrderTableSchema = new mongoose.Schema(
   {
     user_id: {
       type: mongoose.Schema.Types.ObjectId,

@@ -22,23 +22,33 @@ const findFoodValidator = async (req, res, next) => {
   let { food_id, quantity } = req.body;
   const food = await foodServices.getFood(food_id);
 
+  if (!/^\-?([1-9]\d*)$/.test(quantity)) {
+    return next(
+      new ErrorWithStatus({
+        message: ORDER_FOOD.INVALID_REQUEST,
+        status: STATUS.BAD_REQUEST,
+      })
+    );
+  }
+
   let currentOrderFoodList;
   if (food) {
     quantity = parseInt(quantity);
-
     let pendingUserOrderRestaurant =
       await orderFoodServices.findPendingOrderInRestaurantByUser(
         req.user._id,
         food.restaurant_id
       );
     if (!pendingUserOrderRestaurant) {
-      if (quantity === 0)
+      if (quantity < 0)
         return next(
           new ErrorWithStatus({
             message: ORDER_FOOD.INVALID_REQUEST,
             status: STATUS.BAD_REQUEST,
           })
         );
+
+      req.foodQuantityOrder = quantity;
       req.restaurant_id = food.restaurant_id;
       req.food_price = food.price;
       req.controlmode = 1;
@@ -52,13 +62,15 @@ const findFoodValidator = async (req, res, next) => {
         food_id
       );
     if (currentOrderFoodList.length === 0) {
-      if (quantity === 0)
+      if (quantity < 0)
         return next(
           new ErrorWithStatus({
             message: ORDER_FOOD.INVALID_REQUEST,
             status: STATUS.BAD_REQUEST,
           })
         );
+
+      req.foodQuantityOrder = quantity;
       req.controlmode = 2;
       return next();
     }
@@ -68,19 +80,12 @@ const findFoodValidator = async (req, res, next) => {
     );
     for (const orderComponent of currentOrderFoodList) {
       if (food_id === orderComponent.food_id.toString()) {
-        if (quantity > 0) {
-          req.controlmode = 3;
-          req.orderComponent = orderComponent;
-          req.pendingUserOrderRestaurant = pendingUserOrderRestaurant;
-          return next();
-        } else {
-          req.controlmode = 4;
-
-          req.orderComponent = orderComponent;
-          req.pendingUserOrderRestaurant = pendingUserOrderRestaurant;
-          req.currentOrderFoodList = currentOrderFoodList;
-          return next();
-        }
+        req.foodQuantityOrder = orderComponent.quantity + quantity;
+        req.controlmode = 3;
+        req.orderComponent = orderComponent;
+        req.pendingUserOrderRestaurant = pendingUserOrderRestaurant;
+        req.currentOrderFoodList = currentOrderFoodList;
+        return next();
       }
     }
   }
@@ -102,6 +107,7 @@ const createOrderFoodValidator = validate(
       trim: true,
     },
     quantity: {
+      notEmpty: true,
       isNumeric: true,
       trim: true,
     },

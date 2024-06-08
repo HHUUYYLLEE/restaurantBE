@@ -284,7 +284,7 @@ const tokenValidatingResult = async (req, res, next) => {
   return next();
 };
 
-const getAllRestaurantsValidator = validate(
+const getAllConditionRestaurantsValidator = validate(
   checkSchema({
     search: {
       optional: true,
@@ -304,7 +304,9 @@ const getAllRestaurantsValidator = validate(
 const searchRestaurantsAndFoodValidator = validate(
   checkSchema({
     search: {
-      notEmpty: true,
+      trim: true,
+    },
+    address: {
       trim: true,
     },
   }),
@@ -332,7 +334,7 @@ const getAllUserRestaurantsValidator = validate(
 
 module.exports = {
   createRestaurantSchemaValidator,
-  getAllRestaurantsValidator,
+  getAllConditionRestaurantsValidator,
   getRestaurantValidator,
   tokenValidatingResult,
   restaurantImageValidator,

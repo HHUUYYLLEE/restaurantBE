@@ -4,7 +4,7 @@ class RestaurantServices {
     const newRestaurant = await RestaurantModel.create(obj);
     return newRestaurant;
   }
-  async getAllRestaurants({ conditions, page, limit }) {
+  async getAllConditionRestaurants({ conditions, page, limit }) {
     let restaurants;
     if (page !== "" && limit !== "") {
       restaurants = await RestaurantModel.find(conditions)
@@ -17,6 +17,13 @@ class RestaurantServices {
     } else restaurants = await RestaurantModel.find(conditions);
 
     const total = await RestaurantModel.countDocuments(conditions);
+
+    return { restaurants, total };
+  }
+  async getAllRestaurants() {
+    const restaurants = await RestaurantModel.find();
+
+    const total = await RestaurantModel.countDocuments();
 
     return { restaurants, total };
   }

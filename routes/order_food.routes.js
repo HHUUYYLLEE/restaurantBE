@@ -21,15 +21,6 @@ const {
   validateRefreshToken,
 } = require("../middlewares/user.middlewares");
 
-router.post(
-  "/",
-  createOrderFoodValidator,
-  validateAccessToken,
-  validateRefreshToken,
-  tokenValidatingResult,
-  findFoodValidator,
-  wrapRequestHandler(updateOrderFood)
-);
 router.get(
   "/:id",
   validateAccessToken,
@@ -37,15 +28,6 @@ router.get(
   tokenValidatingResult,
   getOrderFoodValidator,
   wrapRequestHandler(getOrderFood)
-);
-
-router.get(
-  "/",
-  validateAccessToken,
-  validateRefreshToken,
-  tokenValidatingResult,
-  getAllOrderFoodValidator,
-  wrapRequestHandler(getAllOrderFood)
 );
 router.post(
   "/placeorder",
@@ -55,5 +37,23 @@ router.post(
   tokenValidatingResult,
   placeOrderFoodValidator,
   wrapRequestHandler(placeAnOrder)
+);
+router.get(
+  "/",
+  validateAccessToken,
+  validateRefreshToken,
+  tokenValidatingResult,
+  getAllOrderFoodValidator,
+  wrapRequestHandler(getAllOrderFood)
+);
+
+router.post(
+  "/",
+  createOrderFoodValidator,
+  validateAccessToken,
+  validateRefreshToken,
+  tokenValidatingResult,
+  findFoodValidator,
+  wrapRequestHandler(updateOrderFood)
 );
 module.exports = router;
