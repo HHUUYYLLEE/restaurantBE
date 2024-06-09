@@ -9,6 +9,7 @@ const {
   getAllUserRestaurants,
   searchRestaurantsAndFood,
   getRandomRestaurants,
+  findNearbyRestaurants,
 } = require("../controllers/restaurant.controllers");
 const {
   createRestaurantSchemaValidator,
@@ -20,6 +21,7 @@ const {
   getRestaurantValidator,
   getAllUserRestaurantsValidator,
   searchRestaurantsAndFoodValidator,
+  findNearbyRestaurantsValidator,
 } = require("../middlewares/restaurant.middlewares");
 const {
   validateAccessToken,
@@ -53,6 +55,11 @@ router.get(
   "/restaurants_and_food",
   searchRestaurantsAndFoodValidator,
   wrapRequestHandler(searchRestaurantsAndFood)
+);
+router.get(
+  "/find_nearby_restaurants",
+  findNearbyRestaurantsValidator,
+  wrapRequestHandler(findNearbyRestaurants)
 );
 router.get("/random_restaurants", wrapRequestHandler(getRandomRestaurants));
 router.get("/:id", getRestaurantValidator, wrapRequestHandler(getRestaurant));

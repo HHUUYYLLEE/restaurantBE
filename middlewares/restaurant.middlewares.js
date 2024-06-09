@@ -331,8 +331,29 @@ const getAllUserRestaurantsValidator = validate(
   }),
   ["params"]
 );
-
+const findNearbyRestaurantsValidator = validate(
+  checkSchema({
+    lat: {
+      notEmpty: true,
+      trim: true,
+    },
+    lng: {
+      notEmpty: true,
+      trim: true,
+    },
+    radius: {
+      notEmpty: true,
+      trim: true,
+    },
+    unit: {
+      notEmpty: true,
+      trim: true,
+    },
+  }),
+  ["params"]
+);
 module.exports = {
+  findNearbyRestaurantsValidator,
   createRestaurantSchemaValidator,
   getAllConditionRestaurantsValidator,
   getRestaurantValidator,

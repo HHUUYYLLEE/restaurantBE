@@ -5,6 +5,8 @@ const restaurantServices = require("../services/restaurant.services");
 const restaurantSubImagesServices = require("../services/restaurant_sub_images.services");
 const userServices = require("../services/user.services");
 const foodServices = require("../services/food.services");
+const axios = require("axios");
+const { envConfig } = require("../constants/config");
 const createRestaurant = async (req, res) => {
   const {
     name,
@@ -193,8 +195,53 @@ const searchRestaurantsAndFood = async (req, res) => {
     });
   }
 };
+const findNearbyRestaurants = async (req, res) => {
+  var { lat, lng, radius, unit } = req.query;
 
+  if (unit === "km") radius *= 1000;
+  const restaurants = await restaurantServices.getAllRestaurants();
+  var resp = [];
+  // const graphHopperURL = envConfig.graphHopperURL+route?point=51.131,12.414&point=48.224,3.867&p
+  // rofile=car&locale=en&calc_points=false&key=f8c74814-714d-4a54-a3db-00c40d7e06b6
+  for (const restaurant of restaurants.restaurants) {
+    try {
+      const response = await axios.get(
+        envConfig.graphHopperURL +
+          "route?point=" +
+          lat +
+          "," +
+          lng +
+          "&point=" +
+          restaurant.lat +
+          "," +
+          restaurant.lng +
+          "&locale=en&calc_points=false&key=" +
+          envConfig.graphHopperAPIKey
+      );
+      const data = response.data;
+      if (data.paths[0].distance <= radius) {
+        var temp = restaurant;
+        temp._doc.distance = data.paths[0].distance;
+
+        resp.push(temp);
+      }
+    } catch (error) {
+      // console.log(error);
+    }
+  }
+  if (resp.length > 0)
+    res.json({
+      message: RESTAURANT.FOUND,
+      restaurants: resp,
+    });
+  else
+    throw new ErrorWithStatus({
+      message: RESTAURANT.NOT_FOUND,
+      status: STATUS.NOT_FOUND,
+    });
+};
 module.exports = {
+  findNearbyRestaurants,
   createRestaurant,
   getAllConditionRestaurants,
   getRestaurant,

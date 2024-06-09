@@ -15,6 +15,8 @@ const envConfig = {
   user_folder_id: process.env.USER_FOLDER_ID,
   accessTokenSecret: process.env.ACCESS_TOKEN_SECRET,
   refreshTokenSecret: process.env.REFRESH_TOKEN_SECRET,
+  graphHopperAPIKey: process.env.GRAPHHOPPER_API_KEY,
+  graphHopperURL: process.env.GRAPHHOPPER_API,
 };
 
 module.exports = {
