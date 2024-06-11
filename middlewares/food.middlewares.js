@@ -8,6 +8,7 @@ const { envConfig } = require("../constants/config");
 const restaurantServices = require("../services/restaurant.services");
 const { ErrorWithStatus } = require("../utils/errors");
 const googleDriveURL = require("../utils/googleDriveURL");
+const foodServices = require("../services/food.services");
 const googleDriveUpload = async (req, res, next) => {
   const image = req.file;
   let bufferStream = new stream.PassThrough();
@@ -46,17 +47,8 @@ const tokenValidatingResult = async (req, res, next) => {
         status: STATUS.UNAUTHORIZED,
       })
     );
-  const restaurant = await restaurantServices.findRestaurantUserMatch(
-    req.user._id,
-    req.body.restaurant_id
-  );
-  if (restaurant) return next();
-  return next(
-    new ErrorWithStatus({
-      message: USER.LOGIN_REQUIRED,
-      status: STATUS.UNAUTHORIZED,
-    })
-  );
+
+  return next();
 };
 
 const foodImageValidator = function (req, res, next) {
@@ -68,8 +60,56 @@ const foodImageValidator = function (req, res, next) {
   return next();
 };
 
-const createFoodValidator = validate(
+const createFoodFormValidator = validate(
   checkSchema({
+    name: {
+      notEmpty: true,
+      isLength: {
+        options: { max: 160 },
+      },
+      trim: true,
+    },
+    desc: {
+      notEmpty: true,
+      isLength: {
+        options: { max: 1000 },
+      },
+      trim: true,
+    },
+    restaurant_id: {
+      notEmpty: true,
+      trim: true,
+    },
+    status: {
+      isNumeric: true,
+      custom: {
+        options: async (value, { req }) => {
+          if (value === "0" || value === "1") return true;
+          else throw new Error(FOOD.INVALID_REQUEST);
+        },
+      },
+      trim: true,
+    },
+    quantity: {
+      isNumeric: true,
+      custom: {
+        options: async (value, { req }) => {
+          if (parseInt(value) === 0) return true;
+          else throw new Error(FOOD.INVALID_REQUEST);
+        },
+      },
+      trim: true,
+    },
+  }),
+  ["body"]
+);
+const updateFoodFormValidator = validate(
+  checkSchema({
+    food_id: {
+      notEmpty: true,
+
+      trim: true,
+    },
     name: {
       notEmpty: true,
       isLength: {
@@ -125,6 +165,18 @@ const getAllFoodValidator = validate(
       optional: true,
       trim: true,
     },
+    sort: {
+      optional: true,
+      trim: true,
+      custom: {
+        options: async (value, { req }) => {
+          if (value && parseInt(value) !== -11 && parseInt(value) !== 1)
+            throw new Error(FOOD.INVALID_REQUEST);
+
+          return true;
+        },
+      },
+    },
   }),
   ["query"]
 );
@@ -154,8 +206,49 @@ const getFoodValidator = validate(
   }),
   ["params"]
 );
+const createFoodValidator = async (req, res, next) => {
+  const restaurant = await restaurantServices.findRestaurantUserMatch(
+    req.user._id,
+    req.body.restaurant_id
+  );
+  if (!restaurant)
+    return next(
+      new ErrorWithStatus({
+        message: FOOD.NOT_FOUND,
+        status: STATUS.BAD_REQUEST,
+      })
+    );
+  return next();
+};
+const updateFoodValidator = async (req, res, next) => {
+  const food = await foodServices.getFood(req.body.food_id);
+  if (!food)
+    return next(
+      new ErrorWithStatus({
+        message: FOOD.NOT_FOUND,
+        status: STATUS.BAD_REQUEST,
+      })
+    );
+  const jsonFood = food.toJSON();
+  const restaurant = await restaurantServices.findRestaurantUserMatch(
+    req.user._id,
+    jsonFood.restaurant_id
+  );
 
+  if (!restaurant)
+    return next(
+      new ErrorWithStatus({
+        message: FOOD.NOT_FOUND,
+        status: STATUS.BAD_REQUEST,
+      })
+    );
+  req.food = jsonFood;
+  return next();
+};
 module.exports = {
+  createFoodFormValidator,
+  updateFoodValidator,
+  updateFoodFormValidator,
   createFoodValidator,
   getAllFoodInRestaurantValidator,
   getAllFoodValidator,

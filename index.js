@@ -9,6 +9,7 @@ const { connectDB } = require("./services/database.services");
 const path = require("path");
 
 const userRoutes = require("./routes/user.routes");
+const reviewRoutes = require("./routes/review.routes");
 const restaurantRoutes = require("./routes/restaurant.routes");
 const foodRoutes = require("./routes/food.routes");
 const orderFoodRoutes = require("./routes/order_food.routes");
@@ -40,7 +41,7 @@ app.use("/api/restaurant", restaurantRoutes);
 app.use("/api/food", foodRoutes);
 app.use("/api/order_food", orderFoodRoutes);
 // app.use("/api/v1/host", hostRoutes);
-// app.use("/api/v1/address", addressRoutes);
+app.use("/api/review", reviewRoutes);
 
 app.use(defaultErrorHander);
 

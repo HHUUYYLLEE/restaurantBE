@@ -10,6 +10,7 @@ const {
   searchRestaurantsAndFood,
   getRandomRestaurants,
   findNearbyRestaurants,
+  updateRestaurant,
 } = require("../controllers/restaurant.controllers");
 const {
   createRestaurantSchemaValidator,
@@ -20,13 +21,33 @@ const {
   tokenValidatingResult,
   getRestaurantValidator,
   getAllUserRestaurantsValidator,
+  simpleSearchRestaurantsAndFoodValidator,
   searchRestaurantsAndFoodValidator,
   findNearbyRestaurantsValidator,
+  updateRestaurantSchemaValidator,
+  updateRestaurantValidator,
 } = require("../middlewares/restaurant.middlewares");
 const {
   validateAccessToken,
   validateRefreshToken,
 } = require("../middlewares/user.middlewares");
+router.put(
+  "/update_restaurant",
+  upload.fields([
+    { name: "image", maxCount: 1 },
+    { name: "image2", maxCount: 1 },
+    { name: "image3", maxCount: 1 },
+    { name: "image4", maxCount: 1 },
+    { name: "image5", maxCount: 1 },
+  ]),
+  updateRestaurantSchemaValidator,
+  validateAccessToken,
+  validateRefreshToken,
+  tokenValidatingResult,
+  restaurantImageValidator,
+  updateRestaurantValidator,
+  wrapRequestHandler(updateRestaurant)
+);
 router.post(
   "/",
   upload.fields([
@@ -57,6 +78,11 @@ router.get(
   wrapRequestHandler(searchRestaurantsAndFood)
 );
 router.get(
+  "/simple_restaurants_and_food",
+  simpleSearchRestaurantsAndFoodValidator,
+  wrapRequestHandler(searchRestaurantsAndFood)
+);
+router.get(
   "/find_nearby_restaurants",
   findNearbyRestaurantsValidator,
   wrapRequestHandler(findNearbyRestaurants)
@@ -66,6 +92,8 @@ router.get("/:id", getRestaurantValidator, wrapRequestHandler(getRestaurant));
 router.get(
   "/",
   getAllConditionRestaurantsValidator,
+  validateAccessToken,
+  validateRefreshToken,
   wrapRequestHandler(getAllConditionRestaurants)
 );
 

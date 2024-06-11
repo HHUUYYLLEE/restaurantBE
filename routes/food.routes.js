@@ -7,6 +7,7 @@ const {
   getAllFood,
   getFood,
   getAllFoodInRestaurant,
+  updateFood,
 } = require("../controllers/food.controllers");
 const {
   createFoodValidator,
@@ -16,20 +17,34 @@ const {
   getAllFoodValidator,
   getFoodValidator,
   getAllFoodInRestaurantValidator,
+  createFoodFormValidator,
+  updateFoodValidator,
+  updateFoodFormValidator,
 } = require("../middlewares/food.middlewares");
 const {
   validateAccessToken,
   validateRefreshToken,
 } = require("../middlewares/user.middlewares");
-
-router.post(
-  "/",
+router.put(
+  "/update_food",
   upload.single("image"),
-  createFoodValidator,
+  updateFoodFormValidator,
   validateAccessToken,
   validateRefreshToken,
   tokenValidatingResult,
   foodImageValidator,
+  updateFoodValidator,
+  wrapRequestHandler(updateFood)
+);
+router.post(
+  "/",
+  upload.single("image"),
+  createFoodFormValidator,
+  validateAccessToken,
+  validateRefreshToken,
+  tokenValidatingResult,
+  foodImageValidator,
+  createFoodValidator,
   googleDriveUpload,
   wrapRequestHandler(createFood)
 );

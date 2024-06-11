@@ -1,34 +1,44 @@
-const FoodModel = require("../models/food.schemas");
+const foodModel = require("../models/food.schemas");
 const mongoose = require("mongoose");
 
 class FoodServices {
   async createFood(obj) {
-    const newFood = await FoodModel.create(obj);
+    const newFood = await foodModel.create(obj);
     return newFood;
   }
-  async getAllFood({ conditions, page, limit }) {
+  async getAllFood({ conditions, sortByPrice, page, limit }) {
     let allFood;
-    if (page !== "" && limit !== "") {
-      allFood = await FoodModel.find(conditions)
+    if (!parseInt(sortByPrice))
+      allFood = await foodModel
+        .find(conditions)
         .skip((page - 1) * limit)
         .limit(limit);
-
-      const total = await FoodModel.countDocuments(conditions);
-      const totalPages = Math.ceil(total / limit);
-      return { allFood, totalPages };
-    } else return await FoodModel.find(conditions);
+    else
+      allFood = await foodModel
+        .find(conditions)
+        .sort({ price: parseInt(sortByPrice) })
+        .skip((page - 1) * limit)
+        .limit(limit);
+    const total = await foodModel.countDocuments(conditions);
+    const totalPages = Math.ceil(total / limit);
+    return { allFood, totalPages };
   }
   async getFood(id) {
-    const food = await FoodModel.findById(id);
+    const food = await foodModel.findById(id);
+    return food;
+  }
+  async updateFood(id, obj) {
+    const food = await foodModel.findByIdAndUpdate(id, obj);
     return food;
   }
   async getAllFoodInRestaurant(id, page, limit) {
-    const allFoodInRestaurant = await FoodModel.find({
-      restaurant_id: id,
-    })
+    const allFoodInRestaurant = await foodModel
+      .find({
+        restaurant_id: id,
+      })
       .skip((page - 1) * limit)
       .limit(limit);
-    const total = await FoodModel.countDocuments({
+    const total = await foodModel.countDocuments({
       restaurant_id: id,
     });
     console.log(limit);

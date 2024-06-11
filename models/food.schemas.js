@@ -4,7 +4,6 @@ const FoodSchema = new mongoose.Schema(
   {
     restaurant_id: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "restaurant",
       required: true,
     },
     name: { type: String, maxlength: 160, required: true },

@@ -94,12 +94,7 @@ const validateAccessToken = async (req, res, next) => {
   if (authHeader && authHeader.startsWith("Bearer")) {
     req.temporaryToken = authHeader.split(" ")[1];
     if (req.temporaryToken === undefined || req.temporaryToken === null) {
-      return next(
-        new ErrorWithStatus({
-          message: USER.LOGIN_REQUIRED,
-          status: STATUS.UNAUTHORIZED,
-        })
-      );
+      return next();
     }
     jwt.verify(
       req.temporaryToken,
@@ -124,28 +119,27 @@ const validateAccessToken = async (req, res, next) => {
       }
     );
   } else {
+    return next();
+  }
+};
+const validateRefreshToken = async (req, res, next) => {
+  if (req.needToVerifyRefreshToken === false) return next();
+  const user = await userServices.findRefreshToken(req.temporaryToken);
+  if (!user) return next();
+  req.user = user.toJSON();
+  return next();
+};
+const tokenValidatingResult = async (req, res, next) => {
+  if (req.user === undefined)
     return next(
       new ErrorWithStatus({
         message: USER.LOGIN_REQUIRED,
         status: STATUS.UNAUTHORIZED,
       })
     );
-  }
-};
-const validateRefreshToken = async (req, res, next) => {
-  if (req.needToVerifyRefreshToken === false) return next();
-  const user = await userServices.findRefreshToken(req.temporaryToken);
-  if (!user)
-    return next(
-      new ErrorWithStatus({
-        message: USER.INVALID_TOKEN,
-        status: STATUS.UNAUTHORIZED,
-      })
-    );
-  req.user = user.toJSON();
+
   return next();
 };
-
 const verifyGoogleLoginCredentials = async (req, res, next) => {
   try {
     const client = new OAuth2Client(envConfig.clientID, envConfig.clientSecret);
@@ -189,6 +183,7 @@ const validateUpdateUserProfile = async (req, res, next) => {
 
 module.exports = {
   loginValidator,
+  tokenValidatingResult,
   userAvatarValidator,
   registerValidator,
   validateAccessToken,

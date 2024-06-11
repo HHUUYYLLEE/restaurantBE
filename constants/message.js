@@ -4,6 +4,7 @@ const MESSAGE = {
 const RESTAURANT = {
   NOT_FOUND: "Restaurant not found",
   INVALID_REQUEST: "Invalid restaurant request",
+  UPDATE_FAILED: "restaurant updating failed",
   NOT_CREATED: "Restaurant not created",
   CREATED: "Restaurant successfully created",
   FOUND_ALL: "Get all restaurants successfully",
@@ -14,11 +15,13 @@ const RESTAURANT = {
 
 const FOOD = {
   NOT_FOUND: "Food not found",
+  UPDATE_FAILED: "food updating failed",
   INVALID_REQUEST: "Invalid food request",
   NOT_CREATED: "Food not created",
   CREATED: "Food successfully created",
   FOUND: "Get all Food successfully",
-  IMAGE_UPLOAD_FAILED: "Upload image failed",
+  UPDATE_FAILED: "review updating failed0",
+  IMAGES_UPLOAD_FAILED: "Upload image failed",
 };
 const USER = {
   GOOGLE_CREDENTIAL_INVALID: "Invalid google credential",
@@ -32,7 +35,7 @@ const USER = {
   EMAIL_EXIST: "Email existed",
   LOGIN_SUCCESS: "Login success",
   LOGIN_REQUIRED: "Login required",
-  IMAGE_UPLOAD_FAILED: "Upload image failed",
+  IMAGES_UPLOAD_FAILED: "Upload image failed",
   GET_PROFILE: "Get user profile successfully",
   UPDATE_SUCCESS: "Updated profile successfully",
   LOCKED: "Account locked",
@@ -47,4 +50,20 @@ const ORDER_FOOD = {
   FOUND: "Get order successfully",
   PLACE_SUCCESS: "Placed order successfully",
 };
-module.exports = { MESSAGE, RESTAURANT, FOOD, USER, ORDER_FOOD };
+const REVIEW = {
+  CREATE_SUCCESS: "Created review successfully",
+  UPDATE_SUCCESS: "Updated review successfully",
+  UPDATE_FAILED: "review updating failed",
+  NOT_FOUND: "review not found",
+  NOT_CREATED: "review not created",
+  DELETE_SUCCESS: "Removed review successfully",
+  DELETE_FAILED: "Removed review failed",
+  INVALID_REQUEST: "Invalid review request",
+  FOUND: "Get review successfully",
+  IMAGES_UPLOAD_FAILED: "Uploading images failed",
+  REPORT_SUCCESS: "Reporting review successfully",
+  REPORT_FAILED: "Reporting review failed",
+  LIKE_DISLIKE_SUCCESS: "like/dislike successfully",
+  LIKE_DISLIKE_FAILED: "like/dislike failed",
+};
+module.exports = { MESSAGE, RESTAURANT, FOOD, USER, ORDER_FOOD, REVIEW };

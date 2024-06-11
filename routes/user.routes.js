@@ -9,6 +9,7 @@ const {
   validateRefreshToken,
   validateUserIDProfile,
   validateUpdateUserProfile,
+  tokenValidatingResult,
 } = require("../middlewares/user.middlewares");
 const {
   loginUser,
@@ -57,6 +58,7 @@ router.put(
   userAvatarValidator,
   validateAccessToken,
   validateRefreshToken,
+  tokenValidatingResult,
   googleDriveUpload,
   wrapRequestHandler(updateUserAvatar)
 );

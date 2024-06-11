@@ -7,6 +7,8 @@ const { RESTAURANT, USER } = require("../constants/message");
 const STATUS = require("../constants/status");
 const googleDriveURL = require("../utils/googleDriveURL");
 const drive = require("../utils/googledrivecre");
+const restaurantServices = require("../services/restaurant.services");
+const restaurantSubImagesServices = require("../services/restaurant_sub_images.services");
 const googleDriveUpload = async (req, res, next) => {
   req.fileURLs = [];
   const images = req.files;
@@ -73,6 +75,7 @@ const createRestaurantSchemaValidator = validate(
       trim: true,
     },
     desc: {
+      notEmpty: true,
       isLength: {
         options: { max: 3000 },
       },
@@ -83,6 +86,10 @@ const createRestaurantSchemaValidator = validate(
       isLength: {
         options: { max: 250 },
       },
+      trim: true,
+    },
+    category: {
+      notEmpty: true,
       trim: true,
     },
 
@@ -304,15 +311,53 @@ const getAllConditionRestaurantsValidator = validate(
 const searchRestaurantsAndFoodValidator = validate(
   checkSchema({
     search: {
+      notEmpty: true,
       trim: true,
     },
     address: {
       trim: true,
     },
+    mode: {
+      notEmpty: true,
+      isNumeric: true,
+      trim: true,
+      custom: {
+        options: async (value, { req }) => {
+          if (parseInt(value) !== 1 && parseInt(value) !== 2)
+            throw new Error(RESTAURANT.INVALID_REQUEST);
+
+          return true;
+        },
+      },
+    },
+    page: {
+      notEmpty: true,
+      isNumeric: true,
+      trim: true,
+    },
+    limit: {
+      notEmpty: true,
+      isNumeric: true,
+      trim: true,
+    },
+    category: {
+      trim: true,
+    },
+    sortByScore: {
+      trim: true,
+    },
   }),
   ["query"]
 );
-
+const simpleSearchRestaurantsAndFoodValidator = validate(
+  checkSchema({
+    search: {
+      notEmpty: true,
+      trim: true,
+    },
+  }),
+  ["query"]
+);
 const getRestaurantValidator = validate(
   checkSchema({
     id: {
@@ -352,9 +397,179 @@ const findNearbyRestaurantsValidator = validate(
   }),
   ["params"]
 );
+const updateRestaurantSchemaValidator = validate(
+  checkSchema({
+    restaurant_id: {
+      notEmpty: true,
+      trim: true,
+    },
+    name: {
+      notEmpty: true,
+      isLength: {
+        options: { max: 160 },
+      },
+      trim: true,
+    },
+    desc: {
+      notEmpty: true,
+      isLength: {
+        options: { max: 3000 },
+      },
+      trim: true,
+    },
+    address: {
+      notEmpty: true,
+      isLength: {
+        options: { max: 250 },
+      },
+      trim: true,
+    },
+    category: {
+      notEmpty: true,
+      trim: true,
+    },
+
+    morning_open_time: {
+      custom: {
+        options: async (value, { req }) => {
+          if (value === "") return true;
+          if (value[2] !== ":" || value.length !== 5) {
+            throw new Error(RESTAURANT.INVALID_REQUEST);
+          }
+          let split = value.split(":");
+          if (
+            split[0].length !== 2 ||
+            split[1].length !== 2 ||
+            !/^\d+$/.test(split[0]) ||
+            !/^\d+$/.test(split[1])
+          ) {
+            throw new Error(RESTAURANT.INVALID_REQUEST);
+          }
+          return true;
+        },
+      },
+      trim: true,
+    },
+    morning_closed_time: {
+      custom: {
+        options: async (value, { req }) => {
+          if (value === "") return true;
+          if (value[2] !== ":" || value.length !== 5) {
+            throw new Error(RESTAURANT.INVALID_REQUEST);
+          }
+          let split = value.split(":");
+          if (
+            split[0].length !== 2 ||
+            split[1].length !== 2 ||
+            !/^\d+$/.test(split[0]) ||
+            !/^\d+$/.test(split[1])
+          ) {
+            throw new Error(RESTAURANT.INVALID_REQUEST);
+          }
+          return true;
+        },
+      },
+      trim: true,
+    },
+    afternoon_open_time: {
+      custom: {
+        options: async (value, { req }) => {
+          if (value === "") return true;
+          if (value[2] !== ":" || value.length !== 5) {
+            throw new Error(RESTAURANT.INVALID_REQUEST);
+          }
+          let split = value.split(":");
+          if (
+            split[0].length !== 2 ||
+            split[1].length !== 2 ||
+            !/^\d+$/.test(split[0]) ||
+            !/^\d+$/.test(split[1])
+          ) {
+            throw new Error(RESTAURANT.INVALID_REQUEST);
+          }
+          return true;
+        },
+      },
+      trim: true,
+    },
+    afternoon_closed_time: {
+      custom: {
+        options: async (value, { req }) => {
+          if (value === "") return true;
+          if (value[2] !== ":" || value.length !== 5) {
+            throw new Error(RESTAURANT.INVALID_REQUEST);
+          }
+          let split = value.split(":");
+          if (
+            split[0].length !== 2 ||
+            split[1].length !== 2 ||
+            !/^\d+$/.test(split[0]) ||
+            !/^\d+$/.test(split[1])
+          ) {
+            throw new Error(RESTAURANT.INVALID_REQUEST);
+          }
+          return true;
+        },
+      },
+      trim: true,
+    },
+    status: {
+      isNumeric: true,
+      custom: {
+        options: async (value, { req }) => {
+          if (value === "0" || value === "1") return true;
+          else throw new Error(RESTAURANT.INVALID_REQUEST);
+        },
+      },
+      trim: true,
+    },
+    lat: {
+      notEmpty: true,
+      custom: {
+        options: async (value, { req }) => {
+          if (!/^[0-9]+(\.)?[0-9]*$/.test(value)) {
+            throw new Error(RESTAURANT.INVALID_REQUEST);
+          }
+          return true;
+        },
+      },
+      trim: true,
+    },
+    lng: {
+      notEmpty: true,
+      custom: {
+        options: async (value, { req }) => {
+          if (!/^[0-9]+(\.)?[0-9]*$/.test(value)) {
+            throw new Error(RESTAURANT.INVALID_REQUEST);
+          }
+          return true;
+        },
+      },
+      trim: true,
+    },
+  }),
+  ["body"]
+);
+const updateRestaurantValidator = async (req, res, next) => {
+  const { restaurant_id } = req.body;
+  const restaurant = await restaurantServices.findRestaurantUserMatch(
+    req.user._id,
+    restaurant_id
+  );
+  if (!restaurant) next(new Error(RESTAURANT.NOT_FOUND));
+  const restaurant_sub_images =
+    await restaurantSubImagesServices.findRestaurantSubImages(restaurant_id);
+  req.restaurant = restaurant;
+  req.restaurantSubImages = restaurant_sub_images;
+  return next();
+};
+
 module.exports = {
+  simpleSearchRestaurantsAndFoodValidator,
   findNearbyRestaurantsValidator,
+  updateRestaurantValidator,
   createRestaurantSchemaValidator,
+  updateRestaurantSchemaValidator,
   getAllConditionRestaurantsValidator,
   getRestaurantValidator,
   tokenValidatingResult,

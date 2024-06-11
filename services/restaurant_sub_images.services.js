@@ -8,6 +8,12 @@ class RestaurantSubImagesServices {
   async findRestaurantSubImages(id) {
     return await RestaurantSubImagesModel.findOne({ restaurant_id: id });
   }
+  async updateRestaurantSubImages(id, obj) {
+    return await RestaurantSubImagesModel.findOneAndUpdate(
+      { restaurant_id: id },
+      obj
+    );
+  }
 }
 
 const restaurantSubImagesServices = new RestaurantSubImagesServices();

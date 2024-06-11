@@ -4,21 +4,14 @@ class RestaurantServices {
     const newRestaurant = await RestaurantModel.create(obj);
     return newRestaurant;
   }
-  async getAllConditionRestaurants({ conditions, page, limit }) {
+  async getAllConditionRestaurants(conditions) {
     let restaurants;
-    if (page !== "" && limit !== "") {
-      restaurants = await RestaurantModel.find(conditions)
-        .skip((page - 1) * limit)
-        .limit(limit);
-
-      const total = await RestaurantModel.countDocuments(conditions);
-      const totalPages = Math.ceil(total / limit);
-      return { restaurants, totalPages };
+    if (conditions) {
+      restaurants = await RestaurantModel.find(conditions);
+      return restaurants;
     } else restaurants = await RestaurantModel.find(conditions);
 
-    const total = await RestaurantModel.countDocuments(conditions);
-
-    return { restaurants, total };
+    return restaurants;
   }
   async getAllRestaurants() {
     const restaurants = await RestaurantModel.find();
@@ -26,6 +19,13 @@ class RestaurantServices {
     const total = await RestaurantModel.countDocuments();
 
     return { restaurants, total };
+  }
+  async updateRestaurant(restaurant_id, obj) {
+    const restaurant = await RestaurantModel.findByIdAndUpdate(
+      restaurant_id,
+      obj
+    );
+    return restaurant;
   }
   async findRestaurantUserMatch(user_id, restaurant_id) {
     return RestaurantModel.findOne({

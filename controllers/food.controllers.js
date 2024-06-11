@@ -3,32 +3,83 @@ const STATUS = require("../constants/status");
 const { ErrorWithStatus } = require("../utils/errors");
 const foodServices = require("../services/food.services");
 const restaurantServices = require("../services/restaurant.services");
+const googleDriveURL = require("../utils/googleDriveURL");
+const drive = require("../utils/googledrivecre");
+const { envConfig } = require("../constants/config");
+const stream = require("stream");
+
 const createFood = async (req, res) => {
   const { restaurant_id, name, desc, status, price, quantity } = req.body;
-  if (!(await restaurantServices.getRestaurant(restaurant_id)))
-    throw new ErrorWithStatus({
-      message: FOOD.NOT_CREATED,
-      status: STATUS.BAD_REQUEST,
-    });
   const newFood = await foodServices.createFood({
     restaurant_id,
     name,
     desc,
     status,
     price,
+    quantity,
     image_url: req.fileURL,
   });
   if (!newFood) {
     throw new ErrorWithStatus({
       message: FOOD.NOT_CREATED,
-      status: STATUS.BAD_REQUEST,
+      status: STATUS.INTERNAL_SERVER_ERROR,
     });
   }
   res.json({ message: FOOD.CREATED, newFood });
 };
+const updateFood = async (req, res) => {
+  const { food_id, name, desc, status, price, quantity } = req.body;
+  const image = req.file;
+  if (req.food.image_url.includes("drive.google.com/thumbnail"))
+    await drive.files.delete({
+      fileId: req.food.image_url.split("drive.google.com/thumbnail?id=")[1],
+    });
+  let bufferStream = new stream.PassThrough();
+  bufferStream.end(image.buffer);
+  try {
+    let filename = Date.now() + Math.random() + "food";
+    filename = filename.replace(/\./g, "");
+    const metaData = {
+      name: filename + ".png",
+      parents: [envConfig.food_folder_id], // the ID of the folder you get from createFolder.js is used here
+    };
+    const media = {
+      mimeType: "image/png",
+      body: bufferStream, // the image sent through multer will be uploaded to Drive
+    };
 
+    // uploading the file
+    const uploadFile = await drive.files.create({
+      resource: metaData,
+      media: media,
+      fields: "id",
+    });
+
+    req.fileURL = googleDriveURL(uploadFile.data.id);
+  } catch (err) {
+    throw new ErrorWithStatus({
+      message: FOOD.IMAGE_UPLOAD_FAILED,
+      status: STATUS.INTERNAL_SERVER_ERROR,
+    });
+  }
+  const food = await foodServices.updateFood(food_id, {
+    name,
+    desc,
+    status,
+    price,
+    quantity,
+    image_url: req.fileURL,
+  });
+  if (!food) {
+    throw new ErrorWithStatus({
+      message: FOOD.UPDATE_FAILED,
+      status: STATUS.INTERNAL_SERVER_ERROR,
+    });
+  }
+  res.json({ message: FOOD.UPDATE_SUCCESS, food });
+};
 const getAllFood = async (req, res) => {
-  let { search, page, limit } = req.query;
+  let { search, sortByPrice, page, limit } = req.query;
   page = parseInt(page) || 1;
   limit = parseInt(limit) || 10;
   let conditions = {};
@@ -42,6 +93,7 @@ const getAllFood = async (req, res) => {
   // console.log(conditions);
   const { allFood, totalPage } = await foodServices.getAllFood({
     conditions,
+    sortByPrice,
     page,
     limit,
   });
@@ -94,4 +146,11 @@ const getAllFoodInRestaurant = async (req, res) => {
     limit,
   });
 };
-module.exports = { createFood, getAllFood, getFood, getAllFoodInRestaurant };
+
+module.exports = {
+  createFood,
+  getAllFood,
+  getFood,
+  getAllFoodInRestaurant,
+  updateFood,
+};
