@@ -128,6 +128,10 @@ const updateReviewFormValidator = validate(
       notEmpty: true,
       trim: true,
     },
+    comment: {
+      notEmpty: true,
+      trim: true,
+    },
     quality_score: {
       notEmpty: true,
       trim: true,
@@ -200,7 +204,7 @@ const createReviewValidator = async (req, res, next) => {
 };
 const updateReviewValidator = async (req, res, next) => {
   const { review_id } = req.body;
-  const review = reviewServices.getReview(review_id);
+  const review = await reviewServices.getReview(review_id);
   if (!review)
     return next(
       new ErrorWithStatus({
@@ -208,7 +212,7 @@ const updateReviewValidator = async (req, res, next) => {
         status: STATUS.BAD_REQUEST,
       })
     );
-  if (review.user_id !== req.user._id)
+  if (review.user_id.toString() !== req.user._id)
     return next(
       new ErrorWithStatus({
         message: REVIEW.NOT_FOUND,
@@ -235,16 +239,27 @@ const likeDislikeReviewValidator = validate(
         },
       },
     },
-  })
+  }),
+  ["body"]
 );
+const reportReviewFormValidator = validate(
+  checkSchema({
+    review_id: {
+      notEmpty: true,
+      trim: true,
+    },
+  }),
+  ["body"]
+);
+
 module.exports = {
   getAllReviewsRestaurantValidator,
   createReviewValidator,
   updateReviewValidator,
   updateReviewFormValidator,
   createReviewFormValidator,
-
+  likeDislikeReviewValidator,
   tokenValidatingResult,
-
+  reportReviewFormValidator,
   googleDriveUpload,
 };

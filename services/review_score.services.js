@@ -6,7 +6,7 @@ class ReviewScoreServices {
     return await reviewScoreModel.create(obj);
   }
   async getReviewUserPair(review_id, user_id) {
-    return await reviewScoreModel.find({ review_id, user_id });
+    return await reviewScoreModel.findOne({ review_id, user_id });
   }
   async getAllReviewScoresOfReview(review_id) {
     return await reviewScoreModel.find({ review_id });
@@ -14,6 +14,9 @@ class ReviewScoreServices {
 
   async updateReviewScore(id, obj) {
     return await reviewScoreModel.findByIdAndUpdate(id, obj);
+  }
+  async removeAllReviewScoresOfReview(review_id) {
+    return await reviewScoreModel.deleteMany({ review_id });
   }
 }
 

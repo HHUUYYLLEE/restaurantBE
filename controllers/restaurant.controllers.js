@@ -64,6 +64,7 @@ const createRestaurant = async (req, res) => {
 
 const getAllConditionRestaurants = async (req, res) => {
   let { address, page, limit, category, sortByScore, chair, table } = req.query;
+
   page = parseInt(page) || 1;
   limit = parseInt(limit) || 12;
   let conditions = {};
@@ -152,7 +153,7 @@ const getAllConditionRestaurants = async (req, res) => {
         Math.round((var_location_score / reviews.length) * 10) / 10;
       price_score = Math.round((var_price_score / reviews.length) * 10) / 10;
       area_score = Math.round((var_area_score / reviews.length) * 10) / 10;
-      if (parseInt(sortByScore) === Math.floor(average_score))
+      if (parseInt(sortByScore) === Math.floor(average_score)) {
         sortByScoresRestaurants.push({
           ...data,
           quality_score,
@@ -162,7 +163,7 @@ const getAllConditionRestaurants = async (req, res) => {
           area_score,
           average_score,
         });
-
+      }
       return {
         ...data,
         quality_score,
@@ -297,7 +298,9 @@ const getRestaurant = async (req, res) => {
       );
       for (const score of reviewScores) {
         if (req.user) {
-          if (score.user_id === req.user._id) data.userLikeDislike = score.vote;
+          if (score.user_id.toString() === req.user._id) {
+            data.userLikeDislike = score.vote;
+          }
         }
         switch (score.vote) {
           case "like":

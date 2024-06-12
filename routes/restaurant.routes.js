@@ -88,7 +88,13 @@ router.get(
   wrapRequestHandler(findNearbyRestaurants)
 );
 router.get("/random_restaurants", wrapRequestHandler(getRandomRestaurants));
-router.get("/:id", getRestaurantValidator, wrapRequestHandler(getRestaurant));
+router.get(
+  "/:id",
+  getRestaurantValidator,
+  validateAccessToken,
+  validateRefreshToken,
+  wrapRequestHandler(getRestaurant)
+);
 router.get(
   "/",
   getAllConditionRestaurantsValidator,

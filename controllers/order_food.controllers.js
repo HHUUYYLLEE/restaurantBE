@@ -31,7 +31,7 @@ const updateOrderFood = async (req, res) => {
           message: ORDER_FOOD.NOT_CREATED,
           status: STATUS.INTERNAL_SERVER_ERROR,
         });
-      newOrderFood = newOrderFood.toJSON();
+      newOrderFood = newOrderFood.toObject();
       newOrderFoodList = await orderFoodListServices.createOrderFoodList({
         food_id: food_id,
         order_food_menu_id: newOrderFood._id,
@@ -95,11 +95,7 @@ const updateOrderFood = async (req, res) => {
         req.orderComponent._id.toString(),
         { quantity: quantity }
       );
-      if (req.currentOrderFoodList.length === 1) {
-        deleteOrderFood = orderFoodServices.deleteOrderFood(
-          req.orderComponent.order_food_menu_id.toString()
-        );
-      }
+
       currentOrderFoodList = await orderFoodListServices.findFoodByOrder(
         req.order_food_menu_id
       );

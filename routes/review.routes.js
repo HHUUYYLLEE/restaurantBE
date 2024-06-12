@@ -17,7 +17,9 @@ const {
   updateReviewFormValidator,
   createReviewFormValidator,
   tokenValidatingResult,
+  likeDislikeReviewValidator,
   googleDriveUpload,
+  reportReviewFormValidator,
 } = require("../middlewares/review.middlewares");
 const {
   validateAccessToken,
@@ -34,12 +36,22 @@ router.post(
 );
 
 router.put(
-  "/upate_review",
+  "/like_dislike_review",
+  likeDislikeReviewValidator,
+  validateAccessToken,
+  validateRefreshToken,
+  tokenValidatingResult,
+  wrapRequestHandler(likeDislikeReview)
+);
+
+router.put(
+  "/update_review",
   upload.array("images[]"),
   updateReviewFormValidator,
   validateAccessToken,
   validateRefreshToken,
   tokenValidatingResult,
+  updateReviewValidator,
   wrapRequestHandler(updateReview)
 );
 router.put(
@@ -48,5 +60,13 @@ router.put(
   validateRefreshToken,
   tokenValidatingResult,
   wrapRequestHandler(deleteReview)
+);
+router.put(
+  "/report_review",
+  reportReviewFormValidator,
+  validateAccessToken,
+  validateRefreshToken,
+  tokenValidatingResult,
+  wrapRequestHandler(reportReview)
 );
 module.exports = router;

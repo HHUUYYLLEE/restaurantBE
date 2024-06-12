@@ -9,14 +9,13 @@ const { envConfig } = require("../constants/config");
 const stream = require("stream");
 
 const createFood = async (req, res) => {
-  const { restaurant_id, name, desc, status, price, quantity } = req.body;
+  const { restaurant_id, name, desc, status, price } = req.body;
   const newFood = await foodServices.createFood({
     restaurant_id,
     name,
     desc,
     status,
     price,
-    quantity,
     image_url: req.fileURL,
   });
   if (!newFood) {
@@ -28,7 +27,7 @@ const createFood = async (req, res) => {
   res.json({ message: FOOD.CREATED, newFood });
 };
 const updateFood = async (req, res) => {
-  const { food_id, name, desc, status, price, quantity } = req.body;
+  const { food_id, name, desc, status, price } = req.body;
   const image = req.file;
   if (req.food.image_url.includes("drive.google.com/thumbnail"))
     await drive.files.delete({
@@ -58,7 +57,7 @@ const updateFood = async (req, res) => {
     req.fileURL = googleDriveURL(uploadFile.data.id);
   } catch (err) {
     throw new ErrorWithStatus({
-      message: FOOD.IMAGE_UPLOAD_FAILED,
+      message: FOOD.IMAGES_UPLOAD_FAILED,
       status: STATUS.INTERNAL_SERVER_ERROR,
     });
   }
@@ -67,7 +66,6 @@ const updateFood = async (req, res) => {
     desc,
     status,
     price,
-    quantity,
     image_url: req.fileURL,
   });
   if (!food) {

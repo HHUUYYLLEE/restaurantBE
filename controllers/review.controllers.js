@@ -99,9 +99,9 @@ const updateReview = async (req, res) => {
   }
   const images = req.files;
   // console.log(images);
-  for (const [key, value] of Object.entries(images)) {
+
+  for (const image of images) {
     // console.log(value[0]);
-    let image = value[0];
     let bufferStream = new stream.PassThrough();
     bufferStream.end(image.buffer);
     let tempRNG = Math.random();
@@ -143,7 +143,7 @@ const updateReview = async (req, res) => {
     location_score: parseInt(location_score),
     price_score: parseInt(price_score),
     area_score: parseInt(area_score),
-    images: req.fileURLs,
+    images: req.fileURLs.length > 0 ? req.fileURLs : [],
   });
   if (!updateReview) {
     throw new ErrorWithStatus({
@@ -170,12 +170,16 @@ const getAllReviewsRestaurant = async (req, res) => {
 };
 
 const deleteReview = async (req, res) => {
-  const review = await reviewServices.deleteReview(req.review._id);
+  const { review_id } = req.body;
+  const review = await reviewServices.deleteReview(review_id);
   if (!review)
     throw new ErrorWithStatus({
       message: REVIEW.DELETE_FAILED,
       status: STATUS.BAD_REQUEST,
     });
+  const reviewScores = await reviewScoreServices.removeAllReviewScoresOfReview(
+    review_id
+  );
   res.json({
     message: REVIEW.DELETE_SUCCESS,
   });
@@ -191,7 +195,7 @@ const reportReview = async (req, res) => {
       status: STATUS.BAD_REQUEST,
     });
   res.json({
-    message: REVIEW.DELETE_SUCCESS,
+    message: REVIEW.REPORT_SUCCESS,
   });
 };
 const likeDislikeReview = async (req, res) => {
@@ -207,17 +211,19 @@ const likeDislikeReview = async (req, res) => {
     req.user._id
   );
   if (findReviewScore) {
-    const id = findReviewScore.toJSON();
-    const updateReviewScore = await reviewScoreServices.updateReviewScore(id, {
-      vote,
-    });
+    const updateReviewScore = await reviewScoreServices.updateReviewScore(
+      findReviewScore._id.toString(),
+      {
+        vote,
+      }
+    );
     if (!updateReviewScore)
       throw new ErrorWithStatus({
         message: REVIEW.NOT_FOUND,
         status: STATUS.BAD_REQUEST,
       });
   } else {
-    const newReviewScore = await reviewScoreServices.createReviewScores({
+    const newReviewScore = await reviewScoreServices.createReviewScore({
       review_id,
       user_id: req.user._id,
       vote,

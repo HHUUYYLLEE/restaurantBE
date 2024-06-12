@@ -90,16 +90,6 @@ const createFoodFormValidator = validate(
       },
       trim: true,
     },
-    quantity: {
-      isNumeric: true,
-      custom: {
-        options: async (value, { req }) => {
-          if (parseInt(value) === 0) return true;
-          else throw new Error(FOOD.INVALID_REQUEST);
-        },
-      },
-      trim: true,
-    },
   }),
   ["body"]
 );
@@ -122,10 +112,6 @@ const updateFoodFormValidator = validate(
       isLength: {
         options: { max: 1000 },
       },
-      trim: true,
-    },
-    restaurant_id: {
-      notEmpty: true,
       trim: true,
     },
     status: {
@@ -229,10 +215,11 @@ const updateFoodValidator = async (req, res, next) => {
         status: STATUS.BAD_REQUEST,
       })
     );
-  const jsonFood = food.toJSON();
+  const jsonFood = food.toObject();
+  console.log(jsonFood);
   const restaurant = await restaurantServices.findRestaurantUserMatch(
     req.user._id,
-    jsonFood.restaurant_id
+    jsonFood.restaurant_id.toString()
   );
 
   if (!restaurant)
