@@ -69,7 +69,6 @@ const createReview = async (req, res) => {
     price_score: parseInt(price_score),
     area_score: parseInt(area_score),
     images: req.fileURLs,
-    by_famous_reviewer: req.user.status === 2 ? "true" : "false",
     report_status: 0,
   });
   if (!newReview) {

@@ -11,6 +11,7 @@ const {
   getRandomRestaurants,
   findNearbyRestaurants,
   updateRestaurant,
+  getAllBloggerReviewsRestaurant,
 } = require("../controllers/restaurant.controllers");
 const {
   createRestaurantSchemaValidator,
@@ -86,6 +87,10 @@ router.get(
   "/find_nearby_restaurants",
   findNearbyRestaurantsValidator,
   wrapRequestHandler(findNearbyRestaurants)
+);
+router.get(
+  "/find_blogger_restaurants",
+  wrapRequestHandler(getAllBloggerReviewsRestaurant)
 );
 router.get("/random_restaurants", wrapRequestHandler(getRandomRestaurants));
 router.get(

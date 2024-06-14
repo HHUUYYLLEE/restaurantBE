@@ -9,7 +9,6 @@ const ReviewSchema = new mongoose.Schema(
     user_id: { type: mongoose.Schema.Types.ObjectId, required: true },
     comment: { type: String, required: true },
     images: [{ type: String, maxlength: 160 }],
-    by_famous_reviewer: { type: String, required: true },
     quality_score: { type: Number, required: true },
     service_score: { type: Number, required: true },
     location_score: { type: Number, required: true },

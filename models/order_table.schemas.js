@@ -4,25 +4,23 @@ const OrderTableSchema = new mongoose.Schema(
   {
     user_id: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "user",
       required: true,
     },
     restaurant_id: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "restaurant",
       required: true,
     },
-    table_num: { type: Number, required: true },
-    chair_num: { type: Number, required: true },
-    memo: { type: String, maxlength: 1000, required: true },
+    table_chair: [{ table: { type: Number }, chair: { type: Number } }],
+    memo: { type: String, maxlength: 1000 },
     status: { type: Number, required: true },
+    date: { type: Date, required: true },
   },
   {
     timestamps: true,
-    collection: "order_chair",
+    collection: "order_table",
   }
 );
 
-const orderChairModel = mongoose.model("order_chair", OrderChairSchema);
+const orderTableModel = mongoose.model("order_table", OrderTableSchema);
 
-module.exports = orderChairModel;
+module.exports = orderTableModel;

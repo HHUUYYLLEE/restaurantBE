@@ -1,12 +1,13 @@
 const { checkSchema } = require("express-validator");
 const validate = require("../utils/validation");
 const STATUS = require("../constants/status");
-const { FOOD, USER, ORDER_FOOD } = require("../constants/message");
+const { FOOD, USER, ORDER_FOOD, RESTAURANT } = require("../constants/message");
 const { envConfig } = require("../constants/config");
 const orderFoodServices = require("../services/order_food.services");
 const orderFoodListServices = require("../services/order_food_list.services");
 const { ErrorWithStatus } = require("../utils/errors");
 const foodServices = require("../services/food.services");
+const restaurantServices = require("../services/restaurant.services");
 const tokenValidatingResult = async (req, res, next) => {
   if (req.user === undefined)
     return next(
@@ -161,7 +162,97 @@ const placeOrderFoodValidator = async (req, res, next) => {
     );
   return next();
 };
-
+const getOrderFoodHostValidator = async (req, res, next) => {
+  const { id } = req.params;
+  const order = await orderFoodServices.findOrderById(id);
+  if (!order)
+    return next(
+      new ErrorWithStatus({
+        message: ORDER_FOOD.NOT_FOUND,
+        status: STATUS.NOT_FOUND,
+      })
+    );
+  const restaurant = await restaurantServices.getRestaurant(
+    order.restaurant_id
+  );
+  if (req.user._id.toString() !== restaurant.user_id.toString())
+    next(
+      new ErrorWithStatus({
+        message: RESTAURANT.NOT_FOUND,
+        status: STATUS.UNAUTHORIZED,
+      })
+    );
+  return next();
+};
+const updateOrderFoodHostFormValidator = validate(
+  checkSchema({
+    order_food_id: {
+      notEmpty: true,
+      trim: true,
+    },
+    status: {
+      custom: {
+        options: async (value, { req }) => {
+          if (parseInt(value) === 2 || parseInt(value) === 3) return true;
+          else throw new Error(ORDER_FOOD.INVALID_REQUEST);
+        },
+      },
+    },
+  }),
+  ["body"]
+);
+const updateOrderFoodHostValidator = async (req, res, next) => {
+  const { order_food_id } = req.body;
+  const order = await orderFoodServices.findOrderById(order_food_id);
+  if (!order)
+    return next(
+      new ErrorWithStatus({
+        message: ORDER_FOOD.NOT_FOUND,
+        status: STATUS.NOT_FOUND,
+      })
+    );
+  const restaurant = await restaurantServices.getRestaurant(
+    order.restaurant_id
+  );
+  if (req.user._id.toString() !== restaurant.user_id.toString())
+    next(
+      new ErrorWithStatus({
+        message: RESTAURANT.NOT_FOUND,
+        status: STATUS.UNAUTHORIZED,
+      })
+    );
+  return next();
+};
+const cancelOrderFoodFormValidator = validate(
+  checkSchema({
+    order_food_id: {
+      notEmpty: true,
+      trim: true,
+    },
+  }),
+  ["body"]
+);
+const cancelOrderFoodValidator = async (req, res, next) => {
+  const orderFood = await orderFoodServices.findOrderAndUserPair(
+    req.user._id,
+    req.body.order_food_id
+  );
+  if (!orderFood)
+    return next(
+      new ErrorWithStatus({
+        message: ORDER_FOOD.NOT_FOUND,
+        status: STATUS.BAD_REQUEST,
+      })
+    );
+  else if (orderFood.status !== 1)
+    return next(
+      new ErrorWithStatus({
+        message: ORDER_FOOD.INVALID_REQUEST,
+        status: STATUS.BAD_REQUEST,
+      })
+    );
+  return next();
+};
 module.exports = {
   createOrderFoodValidator,
   getAllOrderFoodValidator,
@@ -170,4 +261,9 @@ module.exports = {
   findFoodValidator,
   placeOrderFoodValidator,
   placeOrderFoodValidatorForm,
+  getOrderFoodHostValidator,
+  updateOrderFoodHostValidator,
+  updateOrderFoodHostFormValidator,
+  cancelOrderFoodFormValidator,
+  cancelOrderFoodValidator,
 };

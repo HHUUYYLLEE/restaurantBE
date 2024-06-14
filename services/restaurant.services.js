@@ -38,7 +38,7 @@ class RestaurantServices {
     return restaurant;
   }
   async findAllUserRestaurants(user_id) {
-    return RestaurantModel.find({ user_id: user_id });
+    return await RestaurantModel.find({ user_id: user_id });
   }
 }
 

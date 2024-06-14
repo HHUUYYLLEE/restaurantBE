@@ -79,7 +79,6 @@ const registerValidator = validate(
       trim: true,
     },
     phone_number: { notEmpty: true, trim: true },
-    address: { trim: true },
     username: { trim: true },
   }),
   ["body"]

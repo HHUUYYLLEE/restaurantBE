@@ -293,6 +293,7 @@ const getRestaurant = async (req, res) => {
       const user = await userServices.getUserFromId(data.user_id);
       data.username = user.username;
       data.avatar_url = user.avatar_url;
+      data.status = user.status;
       const reviewScores = await reviewScoreServices.getAllReviewScoresOfReview(
         data._id
       );
@@ -806,26 +807,96 @@ const updateRestaurant = async (req, res) => {
   res.json({ message: RESTAURANT.UPDATED, newRestaurant });
 };
 const getAllBloggerReviewsRestaurant = async (req, res) => {
-  const restaurants = await restaurantServices.getAllRestaurants();
-  var modifiedRestaurantsData = [];
-  restaurants.map(async (data) => {
-    data.bloggerReviews = [];
-    const reviews = await reviewServices.getAllReviewsInRestaurant(data._id);
-    for (const review of reviews)
-      if (review.by_famous_reviewer === "true")
-        data.bloggerReviews.push(review);
-    for (let i = data.bloggerReviews.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [data.bloggerReviews[i], data.bloggerReviews[j]] = [
-        data.bloggerReviews[j],
-        data.bloggerReviews[i],
-      ];
+  let { address, page, limit, category, sortByScore, chair, table } = req.query;
+
+  page = parseInt(page) || 1;
+  limit = parseInt(limit) || 12;
+  let conditions = {};
+  let queryArray = [];
+  if (category || address || chair) {
+    if (category && category.length > 0) {
+      category.map((data) => {
+        queryArray.push({
+          category: { $regex: data, $options: "i" },
+        });
+      });
     }
-    if (data.bloggerReviews.length !== 0) modifiedRestaurantsData.push(data);
-  });
+    if (address)
+      queryArray.push({ address: { $regex: address, $options: "i" } });
+    if (chair && table)
+      queryArray.push({
+        table_chair: {
+          $elemMatch: {
+            chair: { $gte: parseInt(chair) },
+            table: { $gte: parseInt(table) },
+          },
+        },
+      });
+    conditions = { $and: queryArray };
+  }
+  const restaurants = await restaurantServices.getAllConditionRestaurants(
+    conditions
+  );
+  if (restaurants.length === 0) {
+    throw new ErrorWithStatus({
+      message: RESTAURANT.NOT_FOUND,
+      status: STATUS.NOT_FOUND,
+    });
+  }
+  var modifiedRestaurantsData = [];
+  await Promise.all(
+    restaurants.map(async (data) => {
+      data = data.toObject();
+      data.bloggerReviews = [];
+      const reviews = await reviewServices.getAllReviewsInRestaurant(data._id);
+      for (var review of reviews) {
+        const user = await userServices.getUserFromId(review.user_id);
+        review = review.toObject();
+        if (user.status === 2) {
+          review.username = user.username;
+          review.avatar_url = user.avatar_url;
+          review.average_score =
+            Math.round(
+              ((review.location_score +
+                review.quality_score +
+                review.area_score +
+                review.price_score +
+                review.service_score) /
+                5) *
+                10
+            ) / 10;
+          data.bloggerReviews.push(review);
+        }
+      }
+      for (let i = data.bloggerReviews.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [data.bloggerReviews[i], data.bloggerReviews[j]] = [
+          data.bloggerReviews[j],
+          data.bloggerReviews[i],
+        ];
+      }
+      if (data.bloggerReviews.length !== 0) {
+        if (!parseInt(sortByScore)) modifiedRestaurantsData.push(data);
+        else {
+          if (parseInt(sortByScore) === Math.floor(average_score)) {
+            modifiedRestaurantsData.push({
+              ...data,
+              quality_score,
+              service_score,
+              location_score,
+              price_score,
+              area_score,
+              average_score,
+            });
+          }
+        }
+      }
+    })
+  );
+
   res.json({
     message: RESTAURANT.FOUND,
-    restaurant: modifiedRestaurantsData,
+    restaurants: modifiedRestaurantsData,
   });
 };
 module.exports = {
@@ -837,4 +908,5 @@ module.exports = {
   searchRestaurantsAndFood,
   getRandomRestaurants,
   updateRestaurant,
+  getAllBloggerReviewsRestaurant,
 };

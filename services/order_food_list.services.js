@@ -14,15 +14,15 @@ class OrderFoodListServices {
     return updateOrderFoodList;
   }
   async deleteOrderFoodList(id) {
-    const deletedOrderFoodList = orderFoodListModel.findByIdAndDelete(id);
+    const deletedOrderFoodList = await orderFoodListModel.findByIdAndDelete(id);
     return deletedOrderFoodList;
   }
   async findFoodByOrder(id) {
-    const food = orderFoodListModel.find({ order_food_menu_id: id });
+    const food = await orderFoodListModel.find({ order_food_menu_id: id });
     return food;
   }
   async findOrderByFoodAndOrderPair(order_food_menu_id, food_id) {
-    const order = orderFoodListModel.find({
+    const order = await orderFoodListModel.find({
       order_food_menu_id: order_food_menu_id,
       food_id: food_id,
     });

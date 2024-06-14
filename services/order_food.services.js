@@ -12,26 +12,26 @@ class OrderFoodServices {
     return updateOrderFood;
   }
   async deleteOrderFood(id) {
-    const deletedOrderFood = orderFoodModel.findByIdAndDelete(id);
+    const deletedOrderFood = await orderFoodModel.findByIdAndDelete(id);
     return deletedOrderFood;
   }
   async findOrdersByUser(id) {
-    const userOrders = orderFoodModel.find({ user_id: id });
+    const userOrders = await orderFoodModel.find({ user_id: id });
     return userOrders;
   }
   async findOrderById(id) {
-    const order = orderFoodModel.findById(id);
+    const order = await orderFoodModel.findById(id);
     return order;
   }
   async findPendingOrdersByUser(id) {
-    const pendingUserOrders = orderFoodModel.find({
+    const pendingUserOrders = await orderFoodModel.find({
       user_id: id,
       status: 0,
     });
     return pendingUserOrders;
   }
   async findPendingOrderInRestaurantByUser(user_id, restaurant_id) {
-    const pendingUserOrders = orderFoodModel.findOne({
+    const pendingUserOrders = await orderFoodModel.findOne({
       user_id: user_id,
       restaurant_id: restaurant_id,
       status: 0,
@@ -39,7 +39,7 @@ class OrderFoodServices {
     return pendingUserOrders;
   }
   async findOrderAndUserPair(user_id, order_id) {
-    const orderAndUserPair = orderFoodModel.findOne({
+    const orderAndUserPair = await orderFoodModel.findOne({
       _id: order_id,
       user_id: user_id,
     });
@@ -58,6 +58,9 @@ class OrderFoodServices {
     // console.log(limit);
     const totalPages = Math.ceil(total / limit);
     return { allUserOrders, totalPages };
+  }
+  async getAllOrdersByRestaurant(conditions) {
+    return await orderFoodModel.find(conditions);
   }
 }
 

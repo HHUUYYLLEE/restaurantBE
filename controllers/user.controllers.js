@@ -12,7 +12,6 @@ const registerUser = async (req, res) => {
     password: await bcrypt.hash(req.body.password, 10),
     role: 0,
     phone_number: req.body.phone_number || "",
-    address: req.body.address || "Somewhere",
     avatar_url: req.fileURL,
     status: 1,
   };
@@ -61,7 +60,7 @@ const loginUserGoogle = async (req, res) => {
       username: req.userTicket.payload.name,
       password: await bcrypt.hash(req.userTicket.payload.sub, 10),
       role: 0,
-      phone_number: "",
+      phone_number: "0123456789",
       address: "Somewhere",
       avatar_url: req.userTicket.payload.picture,
       status: 1,
@@ -98,7 +97,6 @@ const updateUserProfile = async (req, res) => {
   const data = {
     username: req.body.username || "newUser",
     phone_number: req.body.phone_number || "",
-    address: req.body.address || "Somewhere",
   };
   const userData = await userServices.updateUser(req.user._id, data);
   let user = userData.toJSON();

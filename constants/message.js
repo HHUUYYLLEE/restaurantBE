@@ -49,6 +49,19 @@ const ORDER_FOOD = {
   INVALID_REQUEST: "Invalid order request",
   FOUND: "Get order successfully",
   PLACE_SUCCESS: "Placed order successfully",
+  CANCEL_SUCCESS: "Cancel order successfully",
+};
+const ORDER_TABLE = {
+  CREATE_SUCCESS: "Created order successfully",
+  UPDATE_SUCCESS: "Updated order successfully",
+  NOT_FOUND: "Order not found",
+  NOT_CREATED: "Order not created",
+  DELETE_SUCCESS: "Removed order successfully",
+  INVALID_REQUEST: "Invalid order request",
+  FOUND: "Get order successfully",
+  PLACE_SUCCESS: "Placed order successfully",
+  CANCEL_SUCCESS: "Cancel order successfully",
+  EXISTED: "One pending order table for user existed.",
 };
 const REVIEW = {
   CREATE_SUCCESS: "Created review successfully",
@@ -66,4 +79,12 @@ const REVIEW = {
   LIKE_DISLIKE_SUCCESS: "like/dislike successfully",
   LIKE_DISLIKE_FAILED: "like/dislike failed",
 };
-module.exports = { MESSAGE, RESTAURANT, FOOD, USER, ORDER_FOOD, REVIEW };
+module.exports = {
+  MESSAGE,
+  RESTAURANT,
+  FOOD,
+  USER,
+  ORDER_FOOD,
+  REVIEW,
+  ORDER_TABLE,
+};
