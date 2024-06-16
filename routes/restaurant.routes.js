@@ -12,6 +12,7 @@ const {
   findNearbyRestaurants,
   updateRestaurant,
   getAllBloggerReviewsRestaurant,
+  simpleSearchRestaurantsAndFood,
 } = require("../controllers/restaurant.controllers");
 const {
   createRestaurantSchemaValidator,
@@ -81,7 +82,7 @@ router.get(
 router.get(
   "/simple_restaurants_and_food",
   simpleSearchRestaurantsAndFoodValidator,
-  wrapRequestHandler(searchRestaurantsAndFood)
+  wrapRequestHandler(simpleSearchRestaurantsAndFood)
 );
 router.get(
   "/find_nearby_restaurants",

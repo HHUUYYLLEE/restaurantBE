@@ -10,6 +10,7 @@ const {
   validateUserIDProfile,
   validateUpdateUserProfile,
   tokenValidatingResult,
+  applyBloggerValidator,
 } = require("../middlewares/user.middlewares");
 const {
   loginUser,
@@ -18,6 +19,7 @@ const {
   getUserProfile,
   updateUserProfile,
   updateUserAvatar,
+  applyBlogger,
 } = require("../controllers/user.controllers");
 const wrapRequestHandler = require("../utils/handlers");
 const upload = require("../utils/multer");
@@ -29,6 +31,14 @@ router.get(
   validateRefreshToken,
   validateUserIDProfile,
   wrapRequestHandler(getUserProfile)
+);
+router.post(
+  "/apply_blogger",
+  validateAccessToken,
+  validateRefreshToken,
+  tokenValidatingResult,
+  applyBloggerValidator,
+  wrapRequestHandler(applyBlogger)
 );
 router.post(
   "/register",

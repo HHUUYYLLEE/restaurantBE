@@ -7,7 +7,7 @@ const rateLimit = require("express-rate-limit");
 const { envConfig } = require("./constants/config");
 const { connectDB } = require("./services/database.services");
 const path = require("path");
-
+const adminRoutes = require("./routes/admin.routes");
 const userRoutes = require("./routes/user.routes");
 const reviewRoutes = require("./routes/review.routes");
 const restaurantRoutes = require("./routes/restaurant.routes");
@@ -38,6 +38,7 @@ app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use("/api/user", userRoutes);
+app.use("/api/admin", adminRoutes);
 app.use("/api/restaurant", restaurantRoutes);
 app.use("/api/food", foodRoutes);
 app.use("/api/order_food", orderFoodRoutes);

@@ -118,11 +118,21 @@ const updateUserAvatar = async (req, res) => {
   delete user.password;
   res.json({ message: USER.UPDATE_SUCCESS, user });
 };
+const applyBlogger = async (req, res) => {
+  const updateUser = await userServices.updateUser(req.user._id, { status: 2 });
+  if (!updateUser)
+    throw new ErrorWithStatus({
+      message: USER.NOT_FOUND,
+      status: STATUS.BAD_REQUEST,
+    });
+  res.json({ message: USER.APPLY_BLOGGER_SUCCESS });
+};
 module.exports = {
   loginUser,
   registerUser,
   loginUserGoogle,
   getUserProfile,
   updateUserProfile,
+  applyBlogger,
   updateUserAvatar,
 };

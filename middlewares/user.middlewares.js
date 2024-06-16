@@ -179,7 +179,17 @@ const validateUpdateUserProfile = async (req, res, next) => {
   }
   return next();
 };
-
+const applyBloggerValidator = async (req, res, next) => {
+  const user = await userServices.getUserFromId(req.user._id);
+  if (!user || user.status !== 1)
+    return next(
+      new ErrorWithStatus({
+        message: USER.INVALID_REQUEST,
+        status: STATUS.BAD_REQUEST,
+      })
+    );
+  return next();
+};
 module.exports = {
   loginValidator,
   tokenValidatingResult,
@@ -191,4 +201,5 @@ module.exports = {
   verifyGoogleLoginCredentials,
   validateUserIDProfile,
   validateUpdateUserProfile,
+  applyBloggerValidator,
 };

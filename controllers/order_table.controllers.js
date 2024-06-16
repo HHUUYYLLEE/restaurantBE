@@ -33,17 +33,19 @@ const createOrderTable = async (req, res) => {
 
 const getOrderTable = async (req, res) => {
   const { id } = req.params;
-  const orderTable = await orderTableServices.findOrderAndUserPair(
-    req.user._id,
-    id
+  const orderTable = await orderTableServices.findTableOrderAndUserPair(
+    id,
+    req.user._id
   );
   if (!orderTable)
     throw new ErrorWithStatus({
       message: ORDER_TABLE.NOT_FOUND,
       status: STATUS.NOT_FOUND,
     });
-
-  res.json({ message: ORDER_TABLE.FOUND, orderTable });
+  const restaurant = await restaurantServices.getRestaurant(
+    orderTable.restaurant_id
+  );
+  res.json({ message: ORDER_TABLE.FOUND, orderTable, restaurant });
 };
 
 const getAllUserOrderTable = async (req, res) => {

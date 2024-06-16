@@ -42,6 +42,10 @@ class UserServices {
     const user = await UserModel.findByIdAndUpdate(id, data, { new: true });
     return user;
   }
+  async getAllUsers(conditions) {
+    if (conditions) return await UserModel.find(conditions);
+    else return await UserModel.find();
+  }
 }
 
 const userServices = new UserServices();

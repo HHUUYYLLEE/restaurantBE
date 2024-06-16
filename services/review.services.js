@@ -9,7 +9,9 @@ class ReviewServices {
     return await reviewModel.findById(id);
   }
   async getAllReviewsInRestaurant(restaurant_id) {
-    return await reviewModel.find({ restaurant_id: restaurant_id });
+    return await reviewModel
+      .find({ restaurant_id: restaurant_id })
+      .sort({ updatedAt: -1 });
   }
   async getAllReviews() {
     return await reviewModel.find();

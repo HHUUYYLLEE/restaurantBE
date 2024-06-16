@@ -39,6 +39,12 @@ const USER = {
   GET_PROFILE: "Get user profile successfully",
   UPDATE_SUCCESS: "Updated profile successfully",
   LOCKED: "Account locked",
+  VERIFY_BLOGGER_FAILED: "Failed to verify blogger",
+  VERIFY_BLOGGER_SUCCESS: "Verified blogger successfully",
+  MODIFY_STATUS_SUCCESS: "Modified user status successfully",
+  MODIFY_STATUS_FAILED: "Failed to modify user status",
+  FOUND: "Found users",
+  APPLY_BLOGGER_SUCCESS: "apply blogger succesfully",
 };
 const ORDER_FOOD = {
   CREATE_SUCCESS: "Created order successfully",

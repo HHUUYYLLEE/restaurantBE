@@ -62,8 +62,8 @@ const cancelOrderTableFormValidator = validate(
 );
 const cancelOrderTableValidator = async (req, res, next) => {
   const orderTable = await orderTableServices.findTableOrderAndUserPair(
-    req.user._id,
-    req.body.order_table_id
+    req.body.order_table_id,
+    req.user._id
   );
   if (!orderTable)
     return next(

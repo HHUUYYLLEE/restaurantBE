@@ -59,6 +59,7 @@ router.put(
   validateAccessToken,
   validateRefreshToken,
   tokenValidatingResult,
+  updateReviewValidator,
   wrapRequestHandler(deleteReview)
 );
 router.put(

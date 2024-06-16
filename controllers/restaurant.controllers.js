@@ -350,13 +350,22 @@ const searchRestaurantsAndFood = async (req, res) => {
     table,
   } = req.query;
   page = parseInt(page) || 1;
-  limit = parseInt(limit) || 12;
+  limit = parseInt(limit) || 10;
+  mode = parseInt(mode) || 1;
   let conditions = {};
   let queryArray = [];
   // console.log(mode);
   switch (parseInt(mode)) {
     case 1:
-      if (category || address || chair) {
+      if (category || address || chair || table || search) {
+        if (search)
+          queryArray.push({
+            $or: [
+              { name: { $regex: search, $options: "i" } },
+              { address: { $regex: search, $options: "i" } },
+              { category: { $regex: search, $options: "i" } },
+            ],
+          });
         if (category && category.length > 0) {
           category.map((data) => {
             queryArray.push({
@@ -376,10 +385,18 @@ const searchRestaurantsAndFood = async (req, res) => {
             },
           });
         conditions = { $and: queryArray };
-      }
+      } else
+        conditions = {
+          $or: [
+            { name: { $regex: search, $options: "i" } },
+            { address: { $regex: search, $options: "i" } },
+            { category: { $regex: search, $options: "i" } },
+          ],
+        };
       const restaurants = await restaurantServices.getAllConditionRestaurants(
         conditions
       );
+      console.log(restaurants);
       if (restaurants.length === 0) {
         throw new ErrorWithStatus({
           message: RESTAURANT.NOT_FOUND,
@@ -465,7 +482,6 @@ const searchRestaurantsAndFood = async (req, res) => {
           };
         })
       );
-      // console.log(modifiedRestaurantsData);
       if (parseInt(sortByScore)) {
         if (sortByScoresRestaurants.length === 0)
           throw new ErrorWithStatus({
@@ -473,6 +489,7 @@ const searchRestaurantsAndFood = async (req, res) => {
             status: STATUS.NOT_FOUND,
           });
         totalPages = 1 + Math.floor(sortByScoresRestaurants.length / limit);
+        console.log(totalPages);
         res.json({
           message: RESTAURANT.FOUND,
           restaurants: sortByScoresRestaurants.slice(
@@ -531,7 +548,37 @@ const searchRestaurantsAndFood = async (req, res) => {
       });
   }
 };
+const simpleSearchRestaurantsAndFood = async (req, res) => {
+  let { search } = req.query;
+  let page = 1,
+    limit = 10;
+  let conditions = {
+    $or: [
+      { name: { $regex: search, $options: "i" } },
+      { address: { $regex: search, $options: "i" } },
+      { category: { $regex: search, $options: "i" } },
+    ],
+  };
+  const restaurants = await restaurantServices.getAllConditionRestaurants(
+    conditions
+  );
 
+  conditions = { name: { $regex: search, $options: "i" } };
+  const { allFood } = await foodServices.getAllFood({
+    conditions,
+    page,
+    limit,
+  });
+  if (allFood.length === 0 && restaurants.length === 0)
+    throw new ErrorWithStatus({
+      message: RESTAURANT.NOT_FOUND + " and " + FOOD.NOT_FOUND,
+      status: STATUS.NOT_FOUND,
+    });
+  res.json({
+    message: RESTAURANT.FOUND + " and " + FOOD.FOUND,
+    data: restaurants.concat(allFood),
+  });
+};
 const findNearbyRestaurants = async (req, res) => {
   var {
     lat,
@@ -852,7 +899,7 @@ const getAllBloggerReviewsRestaurant = async (req, res) => {
       for (var review of reviews) {
         const user = await userServices.getUserFromId(review.user_id);
         review = review.toObject();
-        if (user.status === 2) {
+        if (user.status === 3) {
           review.username = user.username;
           review.avatar_url = user.avatar_url;
           review.average_score =
@@ -909,4 +956,5 @@ module.exports = {
   getRandomRestaurants,
   updateRestaurant,
   getAllBloggerReviewsRestaurant,
+  simpleSearchRestaurantsAndFood,
 };

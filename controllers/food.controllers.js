@@ -82,11 +82,7 @@ const getAllFood = async (req, res) => {
   limit = parseInt(limit) || 10;
   let conditions = {};
   if (search) {
-    conditions.$or = [
-      { name: { $regex: search, $options: "i" } },
-      // { describe: { $regex: search, $options: "i" } },
-      // { full_field: { $regex: search, $options: "i" } },
-    ];
+    conditions.$or = [{ name: { $regex: search, $options: "i" } }];
   }
   // console.log(conditions);
   const { allFood, totalPage } = await foodServices.getAllFood({
