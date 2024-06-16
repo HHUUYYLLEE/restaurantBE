@@ -33,7 +33,11 @@ app.set("trust proxy", 1); // Trust first proxy
 // app.use(limiter);
 app.use(morgan("combined"));
 app.use(helmet());
-app.use(cors());
+app.use(
+  cors({
+    origin: ["https://restaurants-fe.vercel.app"],
+  })
+);
 app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
