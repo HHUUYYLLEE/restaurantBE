@@ -17,6 +17,7 @@ const envConfig = {
   refreshTokenSecret: process.env.REFRESH_TOKEN_SECRET,
   graphHopperAPIKey: process.env.GRAPHHOPPER_API_KEY,
   graphHopperURL: process.env.GRAPHHOPPER_API,
+  frontendVercel: process.env.FRONTEND_VERCEL,
   // mongoLocal: process.env.LOCALDB,
 };
 
