@@ -29,6 +29,18 @@ const orderTableFormValidator = validate(
     },
     table_chair: {
       notEmpty: true,
+      custom: {
+        options: async (values, { req }) => {
+          for (const value of values) {
+            if (parseInt(value.table) <= 0)
+              throw new ErrorWithStatus({
+                message: ORDER_TABLE.INVALID_REQUEST,
+                status: STATUS.BAD_REQUEST,
+              });
+          }
+          return true;
+        },
+      },
     },
   }),
   ["body"]
