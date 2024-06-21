@@ -7,7 +7,7 @@ const UserSchema = new mongoose.Schema(
       required: true,
       unique: true,
     },
-    username: { type: String, maxlength: 160, required: false },
+    username: { type: String, maxlength: 160, required: true },
     password: { type: String, maxlength: 160, required: true },
     role: { type: Number, required: true },
     phone_number: { type: String, maxlength: 20, required: false },
