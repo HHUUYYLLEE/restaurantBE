@@ -10,7 +10,7 @@ const UserSchema = new mongoose.Schema(
     username: { type: String, maxlength: 160, required: true },
     password: { type: String, maxlength: 160, required: true },
     role: { type: Number, required: true },
-    phone_number: { type: String, maxlength: 20, required: false },
+    phone_number: { type: String, maxlength: 20, required: true },
     avatar_url: { type: String, maxlength: 160, required: false },
     refresh_token: { type: String, required: true },
     status: { type: Number, required: true },
