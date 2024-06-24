@@ -2,7 +2,7 @@ const { omit } = require("lodash");
 const STATUS = require("../constants/status");
 const { ErrorWithStatus } = require("../utils/errors");
 
-const defaultErrorHander = (err, req, res, next) => {
+const defaultErrorHandler = (err, req, res, next) => {
   // console.log(req.fileIDs);
   // console.log(req);
   // console.log(err);
@@ -20,4 +20,4 @@ const defaultErrorHander = (err, req, res, next) => {
   });
 };
 
-module.exports = defaultErrorHander;
+module.exports = defaultErrorHandler;

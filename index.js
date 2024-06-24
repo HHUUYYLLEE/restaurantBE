@@ -13,7 +13,7 @@ const reviewRoutes = require("./routes/review.routes");
 const restaurantRoutes = require("./routes/restaurant.routes");
 const foodRoutes = require("./routes/food.routes");
 const orderFoodRoutes = require("./routes/order_food.routes");
-const defaultErrorHander = require("./middlewares/error.middlewares");
+const defaultErrorHandler = require("./middlewares/error.middlewares");
 const orderTableRoutes = require("./routes/order_table.routes");
 
 const port = envConfig.port;
@@ -45,7 +45,7 @@ app.use("/api/order_food", orderFoodRoutes);
 app.use("/api/order_table", orderTableRoutes);
 app.use("/api/review", reviewRoutes);
 
-app.use(defaultErrorHander);
+app.use(defaultErrorHandler);
 
 app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`);
