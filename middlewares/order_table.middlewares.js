@@ -186,7 +186,7 @@ const updateOrderTableHostValidator = async (req, res, next) => {
   return next();
 };
 const tokenValidatingResult = async (req, res, next) => {
-  if (req.user === undefined)
+  if (req.user === undefined || req.user.role === 1)
     return next(
       new ErrorWithStatus({
         message: USER.LOGIN_REQUIRED,

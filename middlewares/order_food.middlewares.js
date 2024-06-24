@@ -9,7 +9,7 @@ const { ErrorWithStatus } = require("../utils/errors");
 const foodServices = require("../services/food.services");
 const restaurantServices = require("../services/restaurant.services");
 const tokenValidatingResult = async (req, res, next) => {
-  if (req.user === undefined)
+  if (req.user === undefined || req.user.role === 1)
     return next(
       new ErrorWithStatus({
         message: USER.LOGIN_REQUIRED,
