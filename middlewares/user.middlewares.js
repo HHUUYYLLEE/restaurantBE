@@ -156,6 +156,13 @@ const verifyGoogleLoginCredentials = async (req, res, next) => {
 };
 const validateUserIDProfile = async (req, res, next) => {
   const { id } = req.params;
+  if (req.user === undefined)
+    return next(
+      new ErrorWithStatus({
+        message: USER.LOGIN_REQUIRED,
+        status: STATUS.UNAUTHORIZED,
+      })
+    );
   if (req.user._id === id) return next();
   else
     return next(
