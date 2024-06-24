@@ -156,7 +156,6 @@ const verifyGoogleLoginCredentials = async (req, res, next) => {
 };
 const validateUserIDProfile = async (req, res, next) => {
   const { id } = req.params;
-  console.log(req.user._id);
   if (req.user._id === id) return next();
   else
     return next(
