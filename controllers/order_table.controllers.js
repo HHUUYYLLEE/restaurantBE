@@ -15,6 +15,17 @@ const orderTableServices = require("../services/order_table.services");
 
 const createOrderTable = async (req, res) => {
   const { restaurant_id, table_chair, date } = req.body;
+  if (!Array.isArray(table_chair))
+    throw new ErrorWithStatus({
+      message: ORDER_TABLE.NOT_CREATED,
+      status: STATUS.INTERNAL_SERVER_ERROR,
+    });
+  if (table_chair.length === 0)
+    throw new ErrorWithStatus({
+      message: ORDER_TABLE.NOT_CREATED,
+      status: STATUS.INTERNAL_SERVER_ERROR,
+    });
+
   const newOrderTable = await orderTableServices.createOrderTable({
     user_id: req.user._id,
     restaurant_id,

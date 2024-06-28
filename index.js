@@ -33,7 +33,15 @@ app.set("trust proxy", 1); // Trust first proxy
 // app.use(limiter);
 app.use(morgan("combined"));
 app.use(helmet());
-app.use(cors({ origin: [envConfig.frontendVercel, "http://localhost:8000"] }));
+app.use(
+  cors({
+    origin: [
+      envConfig.frontendVercel,
+      "http://localhost:8000",
+      /^http:\/\/192\.168\..*:8000$/,
+    ],
+  })
+);
 app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
