@@ -14,7 +14,7 @@ const foodRoutes = require("./routes/food.routes");
 const orderFoodRoutes = require("./routes/order_food.routes");
 const defaultErrorHandler = require("./middlewares/error.middlewares");
 const orderTableRoutes = require("./routes/order_table.routes");
-
+const utilsRoutes = require("./routes/utils.routes");
 const port = envConfig.port;
 const app = express();
 
@@ -51,6 +51,7 @@ app.use("/api/food", foodRoutes);
 app.use("/api/order_food", orderFoodRoutes);
 app.use("/api/order_table", orderTableRoutes);
 app.use("/api/review", reviewRoutes);
+app.use("/api/utils", utilsRoutes);
 
 app.use(defaultErrorHandler);
 
