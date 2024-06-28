@@ -36,7 +36,7 @@ app.use(
   cors({
     origin: [
       envConfig.frontendVercel,
-      "http://localhost:8000",
+      /https*:\/\/localhost:8000/,
       /^https*:\/\/192\.168\..*:8000$/,
     ],
   })
