@@ -38,7 +38,7 @@ app.use(
     origin: [
       envConfig.frontendVercel,
       "http://localhost:8000",
-      /^http:\/\/192\.168\..*:8000$/,
+      /^https*:\/\/192\.168\..*:8000$/,
     ],
   })
 );
