@@ -254,7 +254,7 @@ const cancelOrderFood = async (req, res) => {
   const { order_food_id, status } = req.body;
   const updateOrderFood = await orderFoodServices.updateOrderFood(
     order_food_id,
-    { status: 2 }
+    status
   );
 
   res.json({
