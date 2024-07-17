@@ -193,7 +193,7 @@ const updateOrderFoodHostFormValidator = validate(
     status: {
       custom: {
         options: async (value, { req }) => {
-          if (parseInt(value) === 2 || parseInt(value) === 3) return true;
+          if (parseInt(value) === 4 || parseInt(value) === 3) return true;
           else throw new Error(ORDER_FOOD.INVALID_REQUEST);
         },
       },
