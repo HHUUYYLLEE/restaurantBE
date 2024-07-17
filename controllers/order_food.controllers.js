@@ -251,10 +251,10 @@ const updateHostOrderFood = async (req, res) => {
   });
 };
 const cancelOrderFood = async (req, res) => {
-  const { order_food_id, status } = req.body;
+  const { order_food_id } = req.body;
   const updateOrderFood = await orderFoodServices.updateOrderFood(
     order_food_id,
-    status
+    { status: 2 }
   );
 
   res.json({
